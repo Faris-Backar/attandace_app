@@ -1,25 +1,31 @@
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
-import 'package:attandance_app/model/classroom.dart';
-import 'package:attandance_app/presentation/admin/screens/create_class_room_screen.dart';
-import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
+import 'package:attandance_app/model/student.dart';
+import 'package:attandance_app/presentation/admin/screens/create_student_screen.dart';
+import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ClassScreen extends StatefulWidget {
-  static const routeName = '/ClassScreen';
-  const ClassScreen({Key? key}) : super(key: key);
+class StudentScreen extends StatefulWidget {
+  static const routeName = '/StudentsScreen';
+  const StudentScreen({Key? key}) : super(key: key);
 
   @override
-  State<ClassScreen> createState() => _ClassScreenState();
+  State<StudentScreen> createState() => _StudentScreenState();
 }
 
-class _ClassScreenState extends State<ClassScreen> {
-  List<ClassRoom> classRoomList = [];
+class _StudentScreenState extends State<StudentScreen> {
+  List<Student> studentList = [];
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomEvent());
+    BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
+  }
+
+  @override
+  void didChangeDependencies() {
+    BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
+    super.didChangeDependencies();
   }
 
   @override
@@ -28,7 +34,7 @@ class _ClassScreenState extends State<ClassScreen> {
       appBar: AppBar(
         backgroundColor: StyleResources.primaryColor,
         title: const Text(
-          'Class',
+          'Student',
           style: TextStyle(
             color: StyleResources.accentColor,
           ),
@@ -36,30 +42,29 @@ class _ClassScreenState extends State<ClassScreen> {
         actions: [
           IconButton(
               onPressed: () {
-                Navigator.of(context)
-                    .pushNamed(CreateClassRoomScreen.routeName);
+                Navigator.of(context).pushNamed(CreateStudentScreen.routeName);
               },
               icon: const Icon(Icons.add_rounded))
         ],
       ),
       body: Padding(
         padding: Config.defaultPadding(),
-        child: BlocBuilder<ClassroomBloc, ClassroomState>(
+        child: BlocBuilder<StudentBloc, StudentState>(
           builder: (context, state) {
-            if (state is ClassroomLoading) {
-              return Center(
+            if (state is StudentLoading) {
+              return const Center(
                 child: CircularProgressIndicator(
-                    color: StyleResources.primaryColor),
+                  color: Colors.black,
+                ),
               );
             }
-            if (state is ClassRoomLoaded) {
-              classRoomList = state.classroomList;
-              if (classRoomList.isEmpty) {
+            if (state is GetStudentLoaded) {
+              studentList = state.studentList;
+              if (studentList.isEmpty) {
                 return const Center(
                   child: Text(
-                    'No Class Rooms Founds',
+                    'No Students Found',
                     style: TextStyle(
-                      color: Colors.black,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -71,7 +76,7 @@ class _ClassScreenState extends State<ClassScreen> {
                   height: 10,
                 ),
                 shrinkWrap: true,
-                itemCount: classRoomList.length,
+                itemCount: studentList.length,
                 itemBuilder: (context, index) => Card(
                   color: Colors.grey[200],
                   elevation: 5.0,
@@ -85,37 +90,40 @@ class _ClassScreenState extends State<ClassScreen> {
                       ),
                       alignment: Alignment.center,
                       child: Text(
-                        classRoomList[index].name[0].toUpperCase() +
-                            classRoomList[index].name[1].toUpperCase(),
+                        studentList[index].name[0].toUpperCase(),
                         style: const TextStyle(
                             color: StyleResources.accentColor,
                             fontWeight: FontWeight.w600),
                       ),
                     ),
                     title: Text(
-                      classRoomList[index].name,
+                      studentList[index].name,
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    subtitle: Text(classRoomList[index].staffAdvicer),
+                    subtitle: Text(
+                        '${studentList[index].semester} ${studentList[index].department}'),
                     trailing: IconButton(
                       icon: const Icon(
                         Icons.arrow_forward_ios_rounded,
                       ),
                       onPressed: () {},
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                          CreateStudentScreen.routeName,
+                          arguments: [studentList[index], index]);
+                    },
                   ),
                 ),
               );
             }
             return const Center(
               child: Text(
-                'No Class Rooms Founds',
+                'No Student Found',
                 style: TextStyle(
-                  color: Colors.black,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),

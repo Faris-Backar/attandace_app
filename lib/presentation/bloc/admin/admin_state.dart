@@ -13,21 +13,6 @@ class AdminLoading extends AdminState {}
 
 class AdminLoaded extends AdminState {}
 
-class CreateStaffLoading extends AdminState {}
-
-class CreateStaffLoaded extends AdminState {}
-
-class GetStaffLoading extends AdminState {}
-
-class GetStaffLoaded extends AdminState {
-  final List<Staff> staffList;
-  const GetStaffLoaded({
-    required this.staffList,
-  });
-  @override
-  List<Object> get props => [staffList];
-}
-
 class GetCourseLoading extends AdminState {}
 
 class GetCourseLoaded extends AdminState {
@@ -39,4 +24,11 @@ class GetCourseLoaded extends AdminState {
   List<Object> get props => [courseList];
 }
 
-class AdminError extends AdminState {}
+class AdminError extends AdminState {
+  final String error;
+  const AdminError({
+    required this.error,
+  });
+  @override
+  List<Object> get props => [error];
+}

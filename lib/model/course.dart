@@ -1,20 +1,26 @@
 import 'dart:convert';
 
+import 'package:attandance_app/model/staff.dart';
+
 class Course {
   String name;
   String courseCode;
+  Staff? staff;
   Course({
     required this.name,
     required this.courseCode,
+    this.staff,
   });
 
   Course copyWith({
     String? name,
     String? courseCode,
+    Staff? staff,
   }) {
     return Course(
       name: name ?? this.name,
       courseCode: courseCode ?? this.courseCode,
+      staff: staff ?? this.staff,
     );
   }
 
@@ -22,6 +28,7 @@ class Course {
     return {
       'name': name,
       'courseCode': courseCode,
+      'staff': staff?.toMap(),
     };
   }
 
@@ -29,6 +36,7 @@ class Course {
     return Course(
       name: map['name'] ?? '',
       courseCode: map['courseCode'] ?? '',
+      staff: map['staff'] != null ? Staff.fromMap(map['staff']) : null,
     );
   }
 
@@ -37,7 +45,8 @@ class Course {
   factory Course.fromJson(String source) => Course.fromMap(json.decode(source));
 
   @override
-  String toString() => 'Course(name: $name, courseCode: $courseCode)';
+  String toString() =>
+      'Course(name: $name, courseCode: $courseCode, staff: $staff)';
 
   @override
   bool operator ==(Object other) {
@@ -45,9 +54,10 @@ class Course {
 
     return other is Course &&
         other.name == name &&
-        other.courseCode == courseCode;
+        other.courseCode == courseCode &&
+        other.staff == staff;
   }
 
   @override
-  int get hashCode => name.hashCode ^ courseCode.hashCode;
+  int get hashCode => name.hashCode ^ courseCode.hashCode ^ staff.hashCode;
 }

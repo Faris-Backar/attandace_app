@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "174587901066",
+    "project_id": "attandance-manager-d4f48",
+    "storage_bucket": "attandance-manager-d4f48.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:174587901066:android:5ddbf09205388bce802973",
+        "android_client_info": {
+          "package_name": "com.example.attandance_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "174587901066-10h6lckhhrugc501fq2706fqvc72jkfl.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB8sTB8NrgfMKeUyH2N0qrEq11--MOXny0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "174587901066-10h6lckhhrugc501fq2706fqvc72jkfl.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

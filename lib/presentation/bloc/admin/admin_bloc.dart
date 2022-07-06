@@ -1,44 +1,48 @@
 import 'package:attandance_app/model/course.dart';
-import 'package:attandance_app/model/staff.dart';
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 
 part 'admin_event.dart';
 part 'admin_state.dart';
 
 class AdminBloc extends Bloc<AdminEvent, AdminState> {
-  List<Staff> staffList = [];
   List<Course> courseList = [];
+  final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+
   AdminBloc() : super(AdminInitial()) {
-    on<CreateStaffEvent>(_createStaff);
-    on<GetStaffEvent>(_getStaff);
     on<CreateCourseEvent>(_createCourse);
     on<GetCourseEvent>(_getCourse);
   }
 
-  _createStaff(CreateStaffEvent event, Emitter<AdminState> emit) {
-    emit(AdminInitial());
-    emit(CreateStaffLoading());
-    staffList.add(event.staff);
-    emit(CreateStaffLoaded());
-  }
-
-  _getStaff(GetStaffEvent event, Emitter<AdminState> emit) {
-    emit(AdminInitial());
-    emit(GetStaffLoading());
-    emit(GetStaffLoaded(staffList: staffList));
-  }
-
-  _createCourse(CreateCourseEvent event, Emitter<AdminState> emit) {
+  _createCourse(CreateCourseEvent event, Emitter<AdminState> emit) async {
     emit(AdminInitial());
     emit(AdminLoading());
-    courseList.add(event.course);
+    try {
+      final response = await _firebaseFirestore
+          .collection('course')
+          .doc(event.course.name)
+          .set(event.course.toMap());
+      emit(AdminLoaded());
+    } on FirebaseException catch (e) {
+      AdminError(error: e.code);
+    }
     emit(AdminLoaded());
   }
 
-  _getCourse(GetCourseEvent event, Emitter<AdminState> emit) {
+  _getCourse(GetCourseEvent event, Emitter<AdminState> emit) async {
     emit(AdminInitial());
     emit(GetCourseLoading());
+    try {
+      final response = await _firebaseFirestore.collection('course').get();
+      final res = response.docs
+          .map((docSnap) => Course.fromMap(docSnap.data()))
+          .toList();
+      courseList = res;
+      emit(GetCourseLoaded(courseList: courseList));
+    } on FirebaseException catch (e) {
+      emit(AdminError(error: e.code));
+    }
     emit(GetCourseLoaded(courseList: courseList));
   }
 }
