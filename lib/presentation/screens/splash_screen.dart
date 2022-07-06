@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:attandance_app/core/resources/style_resources.dart';
-import 'package:attandance_app/presentation/screens/home_screen.dart';
+import 'package:attandance_app/presentation/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -17,7 +17,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
     Timer(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed(HomeScreen.routeName);
+      Navigator.of(context).pushReplacementNamed(LogInScreen.routeName);
     });
   }
 

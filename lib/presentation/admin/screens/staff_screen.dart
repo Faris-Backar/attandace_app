@@ -1,8 +1,10 @@
+import 'dart:developer';
+
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/presentation/admin/screens/create_staff_screen.dart';
-import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
+import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,7 +22,7 @@ class _StaffScreenState extends State<StaffScreen> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<AdminBloc>(context).add(GetStaffEvent());
+    BlocProvider.of<StaffBloc>(context).add(GetStaffEvent());
   }
 
   @override
@@ -39,7 +41,6 @@ class _StaffScreenState extends State<StaffScreen> {
               onPressed: () {
                 Navigator.of(context).pushNamed(
                   CreateStaffScreen.routeName,
-                  arguments: 'Create',
                 );
               },
               icon: const Icon(Icons.person_add_rounded),
@@ -48,9 +49,9 @@ class _StaffScreenState extends State<StaffScreen> {
         ),
         body: Padding(
           padding: Config.defaultPadding(),
-          child: BlocBuilder<AdminBloc, AdminState>(
+          child: BlocBuilder<StaffBloc, StaffState>(
             builder: (context, state) {
-              if (state is GetStaffLoading) {
+              if (state is StaffLoading) {
                 return Center(
                   child: CircularProgressIndicator(
                     color: StyleResources.primaryColor,
@@ -59,10 +60,11 @@ class _StaffScreenState extends State<StaffScreen> {
               }
               if (state is GetStaffLoaded) {
                 staffList = state.staffList;
+                log(staffList.toString());
                 if (staffList.isEmpty) {
                   return const Center(
                     child: Text(
-                      'No Course Found',
+                      'No Staff Found',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
@@ -81,9 +83,8 @@ class _StaffScreenState extends State<StaffScreen> {
                     elevation: 5.0,
                     child: ListTile(
                       onTap: () => Navigator.of(context).pushNamed(
-                        CreateStaffScreen.routeName,
-                        arguments: 'Update',
-                      ),
+                          CreateStaffScreen.routeName,
+                          arguments: [staffList[index], index]),
                       leading: Container(
                         height: 40,
                         width: 40,

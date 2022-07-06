@@ -7,17 +7,6 @@ abstract class AdminEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class CreateStaffEvent extends AdminEvent {
-  final Staff staff;
-  const CreateStaffEvent({
-    required this.staff,
-  });
-  @override
-  List<Object> get props => [staff];
-}
-
-class GetStaffEvent extends AdminEvent {}
-
 class CreateCourseEvent extends AdminEvent {
   final Course course;
   const CreateCourseEvent({
@@ -28,3 +17,5 @@ class CreateCourseEvent extends AdminEvent {
 }
 
 class GetCourseEvent extends AdminEvent {}
+
+class GetClassRoomEvent extends AdminEvent {}

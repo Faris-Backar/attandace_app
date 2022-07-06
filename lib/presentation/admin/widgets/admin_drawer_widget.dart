@@ -3,6 +3,7 @@ import 'package:attandance_app/presentation/admin/screens/admin_home_screen.dart
 import 'package:attandance_app/presentation/admin/screens/class_screen.dart';
 import 'package:attandance_app/presentation/admin/screens/course_screen.dart';
 import 'package:attandance_app/presentation/admin/screens/staff_screen.dart';
+import 'package:attandance_app/presentation/admin/screens/student_screen.dart';
 import 'package:flutter/material.dart';
 
 class AdminDrawerWidget extends StatefulWidget {
@@ -38,6 +39,18 @@ class _DrawerWidgetState extends State<AdminDrawerWidget> {
       ),
       'title': 'Staff',
       'navigation': StaffScreen.routeName,
+      'trailing': const Icon(
+        Icons.arrow_forward_ios_rounded,
+        color: Colors.white,
+      ),
+    },
+    {
+      'leading': const Icon(
+        Icons.people_alt_outlined,
+        color: Colors.white,
+      ),
+      'title': 'Student',
+      'navigation': StudentScreen.routeName,
       'trailing': const Icon(
         Icons.arrow_forward_ios_rounded,
         color: Colors.white,

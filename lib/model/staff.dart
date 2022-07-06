@@ -2,26 +2,22 @@ import 'dart:convert';
 
 class Staff {
   String name;
-  String username;
-  String password;
+  String email;
   String branch;
   Staff({
     required this.name,
-    required this.username,
-    required this.password,
+    required this.email,
     required this.branch,
   });
 
   Staff copyWith({
     String? name,
-    String? username,
-    String? password,
+    String? email,
     String? branch,
   }) {
     return Staff(
       name: name ?? this.name,
-      username: username ?? this.username,
-      password: password ?? this.password,
+      email: email ?? this.email,
       branch: branch ?? this.branch,
     );
   }
@@ -29,8 +25,7 @@ class Staff {
   Map<String, dynamic> toMap() {
     return {
       'name': name,
-      'username': username,
-      'password': password,
+      'email': email,
       'branch': branch,
     };
   }
@@ -38,8 +33,7 @@ class Staff {
   factory Staff.fromMap(Map<String, dynamic> map) {
     return Staff(
       name: map['name'] ?? '',
-      username: map['username'] ?? '',
-      password: map['password'] ?? '',
+      email: map['email'] ?? '',
       branch: map['branch'] ?? '',
     );
   }
@@ -49,9 +43,7 @@ class Staff {
   factory Staff.fromJson(String source) => Staff.fromMap(json.decode(source));
 
   @override
-  String toString() {
-    return 'Staff(name: $name, username: $username, password: $password, branch: $branch)';
-  }
+  String toString() => 'Staff(name: $name, email: $email, branch: $branch)';
 
   @override
   bool operator ==(Object other) {
@@ -59,16 +51,10 @@ class Staff {
 
     return other is Staff &&
         other.name == name &&
-        other.username == username &&
-        other.password == password &&
+        other.email == email &&
         other.branch == branch;
   }
 
   @override
-  int get hashCode {
-    return name.hashCode ^
-        username.hashCode ^
-        password.hashCode ^
-        branch.hashCode;
-  }
+  int get hashCode => name.hashCode ^ email.hashCode ^ branch.hashCode;
 }

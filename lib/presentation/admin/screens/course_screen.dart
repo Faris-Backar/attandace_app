@@ -43,64 +43,72 @@ class _CourseScreenState extends State<CourseScreen> {
           IconButton(
             onPressed: () {
               showModalBottomSheet(
+                isScrollControlled: true,
+                shape: const RoundedRectangleBorder(
+                    borderRadius:
+                        BorderRadius.vertical(top: Radius.circular(10.0))),
                 context: context,
                 builder: (context) => Padding(
-                  padding: Config.defaultPadding(),
+                  padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom),
                   child: SizedBox(
                     height: 250,
                     child: Form(
                       key: formKey,
-                      child: Column(
-                        children: [
-                          TextInputFormFieldWidget(
-                            inputController: nameController,
-                            textInputType: TextInputType.text,
-                            hintText: '',
-                            validatorFunction: (String? value) {
-                              if (value!.isEmpty) {
-                                return 'please enter a valid name';
-                              }
-                              return null;
-                            },
-                            label: 'Name',
-                          ),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          TextInputFormFieldWidget(
-                            inputController: courseCodeController,
-                            textInputType: TextInputType.text,
-                            hintText: '',
-                            validatorFunction: (String? value) {
-                              if (value!.isEmpty) {
-                                return 'please enter a valid course Code';
-                              }
-                              return null;
-                            },
-                            label: 'Course Code',
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          DefaultButtonWidget(
-                            onTap: () {
-                              if (formKey.currentState!.validate()) {
-                                final course = Course(
-                                    name: nameController.text,
-                                    courseCode: courseCodeController.text);
-                                BlocProvider.of<AdminBloc>(context)
-                                    .add(CreateCourseEvent(course: course));
-                                BlocProvider.of<AdminBloc>(context)
-                                    .add(GetCourseEvent());
-                                nameController.clear();
-                                courseCodeController.clear();
-                                Navigator.of(context).pop();
-                              }
-                            },
-                            title: 'Create Course',
-                            screenSize: screenSize,
-                          ),
-                        ],
+                      child: Padding(
+                        padding: Config.defaultPadding(),
+                        child: Column(
+                          children: [
+                            TextInputFormFieldWidget(
+                              inputController: nameController,
+                              textInputType: TextInputType.text,
+                              hintText: '',
+                              validatorFunction: (String? value) {
+                                if (value!.isEmpty) {
+                                  return 'please enter a valid name';
+                                }
+                                return null;
+                              },
+                              label: 'Name',
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            TextInputFormFieldWidget(
+                              inputController: courseCodeController,
+                              textInputType: TextInputType.text,
+                              hintText: '',
+                              validatorFunction: (String? value) {
+                                if (value!.isEmpty) {
+                                  return 'please enter a valid course Code';
+                                }
+                                return null;
+                              },
+                              label: 'Course Code',
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            DefaultButtonWidget(
+                              onTap: () {
+                                if (formKey.currentState!.validate()) {
+                                  final course = Course(
+                                      name: nameController.text,
+                                      courseCode: courseCodeController.text);
+                                  BlocProvider.of<AdminBloc>(context)
+                                      .add(CreateCourseEvent(course: course));
+                                  BlocProvider.of<AdminBloc>(context)
+                                      .add(GetCourseEvent());
+                                  nameController.clear();
+                                  courseCodeController.clear();
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                              title: 'Create Course',
+                              screenSize: screenSize,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -145,10 +153,6 @@ class _CourseScreenState extends State<CourseScreen> {
                   color: Colors.grey[200],
                   elevation: 5.0,
                   child: ListTile(
-                    // onTap: () => Navigator.of(context).pushNamed(
-                    //   CreateStaffScreen.routeName,
-                    //   arguments: 'Update',
-                    // ),
                     leading: Container(
                       height: 40,
                       width: 40,
