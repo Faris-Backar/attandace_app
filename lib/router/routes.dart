@@ -65,10 +65,11 @@ class Routers {
                   ));
         }
       case MarkAttandanceScreen.routeName:
-        final arg = settings.arguments;
+        final arg = settings.arguments as List;
         return CupertinoPageRoute(
           builder: (_) => MarkAttandanceScreen(
-            students: arg as List<Student>,
+            students: arg[0],
+            course: arg[1],
           ),
         );
       case StaffHomeScreen.routeName:

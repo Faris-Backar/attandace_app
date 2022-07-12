@@ -13,4 +13,6 @@ class PrefResources {
   static const CLASSROOM = 'classroom';
   // ignore: constant_identifier_names
   static const COURSE = 'course';
+  // ignore: constant_identifier_names
+  static const ATTANDANCE = 'attandance';
 }

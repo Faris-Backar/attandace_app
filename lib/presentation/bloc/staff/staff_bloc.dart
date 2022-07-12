@@ -1,4 +1,5 @@
 import 'package:attandance_app/model/staff.dart';
+import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -57,22 +58,4 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
     }
     emit(GetStaffLoaded(staffList: staffList));
   }
-
-  // _getIndividualStaffAccount(
-  //     GetStaffEvent event, Emitter<StaffState> emit) async {
-  //   emit(StaffInitial());
-  //   emit(StaffLoading());
-  //   try {
-  //     final response =
-  //         await _firebaseFirestore.collection('staff').doc(event.name).get();
-  //     final res = response.docs
-  //         .map((docSnap) => Staff.fromMap(docSnap.data()))
-  //         .toList();
-  //     staffList = res;
-  //     emit(GetStaffLoaded(staffList: staffList));
-  //   } on FirebaseException catch (e) {
-  //     emit(StaffError(error: e.code));
-  //   }
-  //   emit(GetStaffLoaded(staffList: staffList));
-  // }
 }

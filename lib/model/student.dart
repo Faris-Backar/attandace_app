@@ -1,5 +1,8 @@
 import 'dart:convert';
+
 import 'package:flutter/foundation.dart';
+
+import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/course.dart';
 
 class Student {
@@ -11,7 +14,7 @@ class Student {
   String year;
   String semester;
   List<Course>? courses;
-
+  List<Attandance>? attandaceList;
   Student({
     required this.name,
     required this.registrationNumber,
@@ -21,6 +24,7 @@ class Student {
     required this.year,
     required this.semester,
     this.courses,
+    this.attandaceList,
   });
 
   Student copyWith({
@@ -32,6 +36,7 @@ class Student {
     String? year,
     String? semester,
     List<Course>? courses,
+    List<Attandance>? attandaceList,
   }) {
     return Student(
       name: name ?? this.name,
@@ -42,11 +47,12 @@ class Student {
       year: year ?? this.year,
       semester: semester ?? this.semester,
       courses: courses ?? this.courses,
+      attandaceList: attandaceList ?? this.attandaceList,
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    return <String, dynamic>{
       'name': name,
       'registrationNumber': registrationNumber,
       'email': email,
@@ -54,21 +60,33 @@ class Student {
       'department': department,
       'year': year,
       'semester': semester,
-      'courses': courses?.map((x) => x.toMap()).toList(),
+      'courses': courses!.map((x) => x.toMap()).toList(),
+      'attandaceList': attandaceList!.map((x) => x.toMap()).toList(),
     };
   }
 
   factory Student.fromMap(Map<String, dynamic> map) {
     return Student(
-      name: map['name'] ?? '',
-      registrationNumber: map['registrationNumber'] ?? '',
-      email: map['email'] ?? '',
-      password: map['password'] ?? '',
-      department: map['department'] ?? '',
-      year: map['year'] ?? '',
-      semester: map['semester'] ?? '',
+      name: map['name'] as String,
+      registrationNumber: map['registrationNumber'] as String,
+      email: map['email'] as String,
+      password: map['password'] as String,
+      department: map['department'] as String,
+      year: map['year'] as String,
+      semester: map['semester'] as String,
       courses: map['courses'] != null
-          ? List<Course>.from(map['courses']?.map((x) => Course.fromMap(x)))
+          ? List<Course>.from(
+              (map['courses'] as List<int>).map<Course?>(
+                (x) => Course.fromMap(x as Map<String, dynamic>),
+              ),
+            )
+          : null,
+      attandaceList: map['attandaceList'] != null
+          ? List<Attandance>.from(
+              (map['attandaceList'] as List<int>).map<Attandance?>(
+                (x) => Attandance.fromMap(x as Map<String, dynamic>),
+              ),
+            )
           : null,
     );
   }
@@ -76,26 +94,26 @@ class Student {
   String toJson() => json.encode(toMap());
 
   factory Student.fromJson(String source) =>
-      Student.fromMap(json.decode(source));
+      Student.fromMap(json.decode(source) as Map<String, dynamic>);
 
   @override
   String toString() {
-    return 'Student(name: $name, registrationNumber: $registrationNumber, email: $email, password: $password, department: $department, year: $year, semester: $semester, courses: $courses)';
+    return 'Student(name: $name, registrationNumber: $registrationNumber, email: $email, password: $password, department: $department, year: $year, semester: $semester, courses: $courses, attandaceList: $attandaceList)';
   }
 
   @override
-  bool operator ==(Object other) {
+  bool operator ==(covariant Student other) {
     if (identical(this, other)) return true;
 
-    return other is Student &&
-        other.name == name &&
+    return other.name == name &&
         other.registrationNumber == registrationNumber &&
         other.email == email &&
         other.password == password &&
         other.department == department &&
         other.year == year &&
         other.semester == semester &&
-        listEquals(other.courses, courses);
+        listEquals(other.courses, courses) &&
+        listEquals(other.attandaceList, attandaceList);
   }
 
   @override
@@ -107,6 +125,7 @@ class Student {
         department.hashCode ^
         year.hashCode ^
         semester.hashCode ^
-        courses.hashCode;
+        courses.hashCode ^
+        attandaceList.hashCode;
   }
 }

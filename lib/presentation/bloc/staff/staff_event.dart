@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'staff_bloc.dart';
 
 abstract class StaffEvent extends Equatable {
@@ -38,7 +39,4 @@ class DeleteStaffEvent extends StaffEvent {
   });
   @override
   List<Object> get props => [index];
-}
-class MarkAttandanceEvent extends StaffEvent{
-  final Student
 }

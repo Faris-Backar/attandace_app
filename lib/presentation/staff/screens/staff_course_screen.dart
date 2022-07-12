@@ -79,8 +79,12 @@ class StaffCourseScreen extends StatelessWidget {
                         onTap: () {
                           print(classRoomList[index].students);
                           Navigator.of(context).pushNamed(
-                              MarkAttandanceScreen.routeName,
-                              arguments: classRoomList[index].students);
+                            MarkAttandanceScreen.routeName,
+                            arguments: [
+                              classRoomList[index].students,
+                              courseList[index].name
+                            ],
+                          );
                         },
                       ),
                     );
