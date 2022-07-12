@@ -93,6 +93,7 @@ class _CourseScreenState extends State<CourseScreen> {
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
                                   final course = Course(
+                                      totalHoursTaken: '0',
                                       name: nameController.text,
                                       courseCode: courseCodeController.text);
                                   BlocProvider.of<AdminBloc>(context)

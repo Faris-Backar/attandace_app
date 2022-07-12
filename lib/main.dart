@@ -7,14 +7,18 @@ import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
 import 'package:attandance_app/presentation/screens/splash_screen.dart';
+import 'package:attandance_app/presentation/student/screens/student_home_screen.dart';
 import 'package:attandance_app/router/routes.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+late SharedPreferences prefs;
 void main(List<String> args) async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  prefs = await SharedPreferences.getInstance();
   runApp(const AttandanceApp());
 }
 
@@ -41,8 +45,9 @@ class AttandanceApp extends StatelessWidget {
           create: (context) => ClassroomBloc(),
         ),
       ],
-      child: const MaterialApp(
+      child: MaterialApp(
         debugShowCheckedModeBanner: false,
+        theme: ThemeData(),
         initialRoute: SplashScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
       ),

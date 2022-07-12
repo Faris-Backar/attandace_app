@@ -1,6 +1,6 @@
-import 'dart:developer';
-
 import 'package:attandance_app/model/classroom.dart';
+import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +18,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     on<GetClassRoomEvent>(_getClassRoom);
     on<AddClassRoomStudentsEvent>(_addSelectedStudents);
     on<GetClassRoomStudentsEvent>(_getClassRoomStudents);
+    on<DeleteClassRoomStudentsEvent>(_deleteClassRoomStudents);
   }
   _createClassRoom(
       CreateClassRoomEvent event, Emitter<ClassroomState> emit) async {
@@ -29,6 +30,9 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
           .collection('classroom')
           .doc(event.classRoom.name)
           .set(event.classRoom.toMap());
+      for (var i = 0; i < event.classRoom.courses.length; i++) {
+        // await _firebaseFirestore.collection('AssignedCourses').doc(event.classRoom.courses[i].name).set(event.classRoom.);
+      }
     } on FirebaseException catch (e) {
       ClassRoomError(error: e.code);
     }
@@ -61,6 +65,13 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
 
   _getClassRoomStudents(
       GetClassRoomStudentsEvent event, Emitter<ClassroomState> emit) {
+    emit(ClassroomInitial());
+    emit(ClassroomLoading());
+    emit(GetClassRoomStudents(studentList: studentsList));
+  }
+
+  _deleteClassRoomStudents(
+      DeleteClassRoomStudentsEvent event, Emitter<ClassroomState> emit) {
     emit(ClassroomInitial());
     emit(ClassroomLoading());
     emit(GetClassRoomStudents(studentList: studentsList));

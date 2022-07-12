@@ -39,3 +39,6 @@ class DeleteStaffEvent extends StaffEvent {
   @override
   List<Object> get props => [index];
 }
+class MarkAttandanceEvent extends StaffEvent{
+  final Student
+}

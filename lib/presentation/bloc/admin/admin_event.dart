@@ -18,4 +18,4 @@ class CreateCourseEvent extends AdminEvent {
 
 class GetCourseEvent extends AdminEvent {}
 
-class GetClassRoomEvent extends AdminEvent {}
+class DeleteCourse extends AdminEvent {}

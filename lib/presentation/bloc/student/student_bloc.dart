@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:attandance_app/model/student.dart';
@@ -12,10 +13,15 @@ part 'student_state.dart';
 class StudentBloc extends Bloc<StudentEvent, StudentState> {
   final _firebaseFirestore = FirebaseFirestore.instance;
   List<Student> studentList = [];
+  List<Student> filteredStudentsList = [];
   StudentBloc() : super(StudentInitial()) {
     on<CreateStudentEvent>(_createStudent);
     on<GetStudentEvent>(_getStudent);
     on<UpdateStudentEvent>(_updateStudent);
+    on<GetFilteredStudentsAccordingtoSemester>(
+        _getFilteredStudentsAccordingtoSemester);
+    on<DeleteFilteredStudentsAccordingtoSemester>(
+        _deleteFilteredStudentsAccordingtoSemester);
   }
 
   _createStudent(CreateStudentEvent event, Emitter<StudentState> emit) async {
@@ -71,5 +77,36 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       event.student,
     );
     emit(CreateStudentLoaded());
+  }
+
+  _getFilteredStudentsAccordingtoSemester(
+      GetFilteredStudentsAccordingtoSemester event,
+      Emitter<StudentState> emit) {
+    emit(StudentInitial());
+    emit(StudentLoading());
+    filteredStudentsList = studentList
+        .where((student) => student.semester == event.semester)
+        .toList();
+    emit(GetStudentLoaded(studentList: filteredStudentsList));
+  }
+
+  _deleteFilteredStudentsAccordingtoSemester(
+      DeleteFilteredStudentsAccordingtoSemester event,
+      Emitter<StudentState> emit) {
+    emit(StudentInitial());
+    emit(StudentLoading());
+    filteredStudentsList.remove(event.student);
+    emit(GetStudentLoaded(studentList: filteredStudentsList));
+  }
+
+  _getIndividualStudent(
+      GetIndividualStudent event, Emitter<StudentState> emit) async {
+    emit(StudentInitial());
+    emit(StudentLoading());
+    try {
+      final response = await _firebaseFirestore.collection('students').get();
+      // final data = json.decode(response);
+
+    } catch (e) {}
   }
 }

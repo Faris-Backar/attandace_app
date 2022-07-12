@@ -39,3 +39,25 @@ class DeleteStudentEvent extends StudentEvent {
   @override
   List<Object> get props => [index];
 }
+
+class GetFilteredStudentsAccordingtoSemester extends StudentEvent {
+  final String semester;
+  const GetFilteredStudentsAccordingtoSemester({
+    required this.semester,
+  });
+
+  @override
+  List<Object> get props => [semester];
+}
+
+class DeleteFilteredStudentsAccordingtoSemester extends StudentEvent {
+  final Student student;
+  const DeleteFilteredStudentsAccordingtoSemester({
+    required this.student,
+  });
+
+  @override
+  List<Object> get props => [student];
+}
+
+class GetIndividualStudent extends StudentEvent {}

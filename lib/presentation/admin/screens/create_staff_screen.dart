@@ -3,6 +3,7 @@ import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
+import 'package:attandance_app/presentation/util/util.dart';
 import 'package:attandance_app/presentation/widgets/default_button_widget.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -175,7 +176,15 @@ class _CreateStaffScreenState extends State<CreateStaffScreen> {
               BlocConsumer<StaffBloc, StaffState>(
                 listener: (context, state) {
                   if (state is CreateStaffLoaded) {
+                    Util.buildSuccessSnackBar(context,
+                        content:
+                            'You are successfully added staff ${nameController.text}');
                     Navigator.of(context).pop();
+                  }
+                  if (state is StaffError) {
+                    Util.buildFailedSnackBar(context,
+                        content:
+                            'Something went wrong please try again later.');
                   }
                 },
                 builder: (context, state) {

@@ -1,13 +1,11 @@
-import 'dart:developer';
-
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/presentation/admin/screens/admin_home_screen.dart';
 import 'package:attandance_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:attandance_app/presentation/staff/screens/staff_home_screen.dart';
+import 'package:attandance_app/presentation/student/screens/student_home_screen.dart';
 import 'package:attandance_app/presentation/widgets/default_button_widget.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -107,6 +105,18 @@ class _LogInScreenState extends State<LogInScreen> {
                                     Navigator.of(context)
                                         .pushNamedAndRemoveUntil(
                                             AdminHomeScreen.routeName,
+                                            (route) => false);
+                                  }
+                                  if (role == 'student') {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            StudentHomeScreen.routeName,
+                                            (route) => false);
+                                  }
+                                  if (role == 'staff') {
+                                    Navigator.of(context)
+                                        .pushNamedAndRemoveUntil(
+                                            StaffHomeScreen.routeName,
                                             (route) => false);
                                   }
                                 }

@@ -29,4 +29,4 @@ class AuthError extends AuthState {
   List<Object> get props => [error];
 }
 
-class AuthSigOutState extends AuthState {}
+class AuthSignOutStateLoaded extends AuthState {}

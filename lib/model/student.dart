@@ -1,4 +1,6 @@
 import 'dart:convert';
+import 'package:flutter/foundation.dart';
+import 'package:attandance_app/model/course.dart';
 
 class Student {
   String name;
@@ -6,8 +8,10 @@ class Student {
   String email;
   String password;
   String department;
-  int year;
+  String year;
   String semester;
+  List<Course>? courses;
+
   Student({
     required this.name,
     required this.registrationNumber,
@@ -16,6 +20,7 @@ class Student {
     required this.department,
     required this.year,
     required this.semester,
+    this.courses,
   });
 
   Student copyWith({
@@ -24,8 +29,9 @@ class Student {
     String? email,
     String? password,
     String? department,
-    int? year,
+    String? year,
     String? semester,
+    List<Course>? courses,
   }) {
     return Student(
       name: name ?? this.name,
@@ -35,6 +41,7 @@ class Student {
       department: department ?? this.department,
       year: year ?? this.year,
       semester: semester ?? this.semester,
+      courses: courses ?? this.courses,
     );
   }
 
@@ -47,6 +54,7 @@ class Student {
       'department': department,
       'year': year,
       'semester': semester,
+      'courses': courses?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -57,8 +65,11 @@ class Student {
       email: map['email'] ?? '',
       password: map['password'] ?? '',
       department: map['department'] ?? '',
-      year: map['year']?.toInt() ?? 0,
+      year: map['year'] ?? '',
       semester: map['semester'] ?? '',
+      courses: map['courses'] != null
+          ? List<Course>.from(map['courses']?.map((x) => Course.fromMap(x)))
+          : null,
     );
   }
 
@@ -69,7 +80,7 @@ class Student {
 
   @override
   String toString() {
-    return 'Student(name: $name, registrationNumber: $registrationNumber, email: $email, password: $password, department: $department, year: $year, semester: $semester)';
+    return 'Student(name: $name, registrationNumber: $registrationNumber, email: $email, password: $password, department: $department, year: $year, semester: $semester, courses: $courses)';
   }
 
   @override
@@ -83,7 +94,8 @@ class Student {
         other.password == password &&
         other.department == department &&
         other.year == year &&
-        other.semester == semester;
+        other.semester == semester &&
+        listEquals(other.courses, courses);
   }
 
   @override
@@ -94,6 +106,7 @@ class Student {
         password.hashCode ^
         department.hashCode ^
         year.hashCode ^
-        semester.hashCode;
+        semester.hashCode ^
+        courses.hashCode;
   }
 }
