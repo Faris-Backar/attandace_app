@@ -71,7 +71,7 @@ class _CreateStudentScreenState extends State<CreateStudentScreen> {
         backgroundColor: StyleResources.primaryColor,
         title: Text(
           widget.student != null ? 'Update Student' : 'Create Student',
-          style: TextStyle(
+          style: const TextStyle(
             color: StyleResources.accentColor,
           ),
         ),

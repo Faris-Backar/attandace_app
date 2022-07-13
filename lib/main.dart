@@ -1,3 +1,4 @@
+import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
@@ -51,7 +52,11 @@ class AttandanceApp extends StatelessWidget {
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
-        theme: ThemeData(),
+        theme: ThemeData(
+          appBarTheme: AppBarTheme(
+            backgroundColor: StyleResources.primaryColor,
+          ),
+        ),
         initialRoute: SplashScreen.routeName,
         onGenerateRoute: Routers.generateRoute,
       ),

@@ -120,9 +120,11 @@ class _CourseScreenState extends State<CourseScreen> {
                     ),
                   ),
                 ),
-              ).then((value) {
-                BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
-              });
+              ).then(
+                (value) {
+                  BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+                },
+              );
             },
             icon: const Icon(Icons.add_rounded),
           ),

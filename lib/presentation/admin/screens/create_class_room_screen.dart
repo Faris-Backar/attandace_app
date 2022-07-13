@@ -36,7 +36,7 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
   List<String> courseList = [];
   List<Course> selectedcourseList = [];
   List<Student> students = [];
-  // List<Student> selectedStudentsList = [];
+  String branchValue = 'CSE';
   String? courseValue;
   String subjectValue = '';
   String staffValue = '';
@@ -54,6 +54,13 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
     'S7',
     'S8',
   ];
+  var branches = [
+    'CSE',
+    'CE',
+    'ECE',
+    'EEE',
+    'ME',
+  ];
   String semValue = 'S1';
 
   @override
@@ -63,17 +70,10 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
     BlocProvider.of<StaffBloc>(context).add(GetStaffEvent());
     BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
     BlocProvider.of<StudentBloc>(context).add(
-      GetFilteredStudentsAccordingtoSemester(semester: semValue),
+      GetFilteredStudentsAccordingtoSemester(
+          semester: semValue, branch: branchValue),
     );
     BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomStudentsEvent());
-  }
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    BlocProvider.of<StudentBloc>(context).add(
-      GetFilteredStudentsAccordingtoSemester(semester: semValue),
-    );
   }
 
   @override
@@ -121,10 +121,25 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                         semValue = value!;
                         BlocProvider.of<StudentBloc>(context).add(
                             GetFilteredStudentsAccordingtoSemester(
-                                semester: semValue));
+                                semester: semValue, branch: branchValue));
                       });
                     }),
                 const SizedBox(height: 20),
+                DropDownFieldWidget(
+                    title: 'Branch',
+                    value: branchValue,
+                    item: branches,
+                    onChanged: (newValue) {
+                      setState(() {
+                        branchValue = newValue!;
+                      });
+                      BlocProvider.of<StudentBloc>(context).add(
+                          GetFilteredStudentsAccordingtoSemester(
+                              semester: semValue, branch: branchValue));
+                    }),
+                const SizedBox(
+                  height: 20,
+                ),
                 BlocBuilder<StaffBloc, StaffState>(
                   builder: (context, state) {
                     if (state is StaffLoading) {
@@ -332,24 +347,18 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                     );
                   },
                 ),
+                const SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    const Text(
+                  children: const [
+                    Text(
                       'Students',
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        Navigator.of(context).pushNamed(
-                          AddStudentScreen.routeName,
-                          arguments: semValue,
-                        );
-                      },
-                      icon: const Icon(Icons.add_outlined),
                     ),
                   ],
                 ),
@@ -364,7 +373,6 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                     }
                     if (state is GetStudentLoaded) {
                       students = state.studentList;
-                      print(state.studentList);
 
                       if (students.isEmpty) {
                         return const Center(
@@ -460,13 +468,14 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
 
                     return DefaultButtonWidget(
                         onTap: () {
-                          print(students);
                           if (formKey.currentState!.validate()) {
                             final classroom = ClassRoom(
-                                name: nameController.text,
-                                staffAdvicer: staffAdvisorValue!,
-                                students: students,
-                                courses: selectedcourseList);
+                              name: nameController.text,
+                              staffAdvicer: staffAdvisorValue!,
+                              students: students,
+                              courses: selectedcourseList,
+                            );
+
                             BlocProvider.of<ClassroomBloc>(context).add(
                               CreateClassRoomEvent(
                                 classRoom: classroom,

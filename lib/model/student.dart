@@ -1,7 +1,5 @@
 import 'dart:convert';
-
 import 'package:flutter/foundation.dart';
-
 import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/course.dart';
 
@@ -13,7 +11,8 @@ class Student {
   String department;
   String year;
   String semester;
-  List<Attandance>? attandaceList;
+  List<Attandance>? attandance;
+  List<Course>? courses;
   Student({
     required this.name,
     required this.registrationNumber,
@@ -22,7 +21,8 @@ class Student {
     required this.department,
     required this.year,
     required this.semester,
-    this.attandaceList,
+    this.attandance,
+    this.courses,
   });
 
   Student copyWith({
@@ -33,7 +33,8 @@ class Student {
     String? department,
     String? year,
     String? semester,
-    List<Attandance>? attandaceList,
+    List<Attandance>? attandance,
+    List<Course>? courses,
   }) {
     return Student(
       name: name ?? this.name,
@@ -43,7 +44,8 @@ class Student {
       department: department ?? this.department,
       year: year ?? this.year,
       semester: semester ?? this.semester,
-      attandaceList: attandaceList ?? this.attandaceList,
+      attandance: attandance ?? this.attandance,
+      courses: courses ?? this.courses,
     );
   }
 
@@ -56,7 +58,8 @@ class Student {
       'department': department,
       'year': year,
       'semester': semester,
-      'attandaceList': attandaceList?.map((x) => x.toMap()).toList(),
+      'attandance': attandance?.map((x) => x.toMap()).toList(),
+      'courses': courses?.map((x) => x.toMap()).toList(),
     };
   }
 
@@ -69,9 +72,12 @@ class Student {
       department: map['department'] ?? '',
       year: map['year'] ?? '',
       semester: map['semester'] ?? '',
-      attandaceList: map['attandaceList'] != null
+      attandance: map['attandance'] != null
           ? List<Attandance>.from(
-              map['attandaceList']?.map((x) => Attandance.fromMap(x)))
+              map['attandance']?.map((x) => Attandance.fromMap(x)))
+          : null,
+      courses: map['courses'] != null
+          ? List<Course>.from(map['courses']?.map((x) => Course.fromMap(x)))
           : null,
     );
   }
@@ -83,7 +89,7 @@ class Student {
 
   @override
   String toString() {
-    return 'Student(name: $name, registrationNumber: $registrationNumber, email: $email, password: $password, department: $department, year: $year, semester: $semester, attandaceList: $attandaceList)';
+    return 'Student(name: $name, registrationNumber: $registrationNumber, email: $email, password: $password, department: $department, year: $year, semester: $semester, attandance: $attandance, courses: $courses)';
   }
 
   @override
@@ -98,7 +104,8 @@ class Student {
         other.department == department &&
         other.year == year &&
         other.semester == semester &&
-        listEquals(other.attandaceList, attandaceList);
+        listEquals(other.attandance, attandance) &&
+        listEquals(other.courses, courses);
   }
 
   @override
@@ -110,6 +117,7 @@ class Student {
         department.hashCode ^
         year.hashCode ^
         semester.hashCode ^
-        attandaceList.hashCode;
+        attandance.hashCode ^
+        courses.hashCode;
   }
 }

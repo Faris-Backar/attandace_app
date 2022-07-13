@@ -43,12 +43,14 @@ class DeleteStudentEvent extends StudentEvent {
 
 class GetFilteredStudentsAccordingtoSemester extends StudentEvent {
   final String semester;
+  final String branch;
   const GetFilteredStudentsAccordingtoSemester({
     required this.semester,
+    required this.branch,
   });
 
   @override
-  List<Object> get props => [semester];
+  List<Object> get props => [semester, branch];
 }
 
 class DeleteFilteredStudentsAccordingtoSemester extends StudentEvent {

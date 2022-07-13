@@ -6,9 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentViewCourseScreen extends StatefulWidget {
-  final String courseName;
+  final Course course;
   static const routeName = '/StudentViewCourseScreen';
-  const StudentViewCourseScreen({Key? key, required this.courseName})
+  const StudentViewCourseScreen({Key? key, required this.course})
       : super(key: key);
 
   @override
@@ -22,7 +22,7 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.courseName),
+        title: Text(widget.course.name),
       ),
       body: Padding(
         padding: Config.defaultPadding(),
@@ -36,13 +36,14 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 if (state is GetCourseLoaded) {
                   List<Course> courseList = state.courseList;
                   course = courseList.singleWhere(
-                    (element) => element.name.contains(widget.courseName),
+                    (element) => element.name.contains(widget.course.name),
                   );
                   return Card(
                     elevation: 5,
                     child: ExpansionTile(
                       title: Text(course!.name),
                       initiallyExpanded: false,
+                      childrenPadding: const EdgeInsets.all(8.0),
                       children: [
                         Padding(
                           padding: const EdgeInsets.all(8.0),
@@ -50,12 +51,16 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Course Code : '),
                                   Text(course!.courseCode),
                                 ],
                               ),
                               Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Total Hours Taken : '),
                                   Text(course!.totalHoursTaken),

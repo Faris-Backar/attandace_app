@@ -84,8 +84,13 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     emit(StudentInitial());
     emit(StudentLoading());
     filteredStudentsList = studentList
-        .where((student) => student.semester.contains(event.semester))
+        .where(
+          (student) =>
+              student.semester == event.semester &&
+              student.department == event.branch,
+        )
         .toList();
+    print('filter => $filteredStudentsList');
     emit(GetStudentLoaded(studentList: filteredStudentsList));
   }
 
@@ -102,13 +107,14 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
       GetIndividualStudentEvent event, Emitter<StudentState> emit) async {
     emit(StudentInitial());
     emit(StudentLoading());
+    print(event.userName);
     try {
       final response = await _firebaseFirestore
-          .collection('students')
+          .collection('student')
           .doc(event.userName)
           .get();
-      final res = Student.fromMap(response.data()!);
-      Student student = res;
+      print(response.data());
+      Student student = Student.fromMap(response.data()!);
       emit(GetIndividualStudentsLoaded(student: student));
     } on FirebaseException catch (e) {
       emit(StudentError(error: e.code));

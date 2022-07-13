@@ -29,8 +29,14 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
           .collection('classroom')
           .doc(event.classRoom.name)
           .set(event.classRoom.toMap());
-      for (var i = 0; i < event.classRoom.courses.length; i++) {
-        // await _firebaseFirestore.collection('AssignedCourses').doc(event.classRoom.courses[i].name).set(event.classRoom.);
+      List<Student> classroomStudentList = event.classRoom.students;
+      for (var i = 0; i < classroomStudentList.length; i++) {
+        await _firebaseFirestore
+            .collection('student')
+            .doc(classroomStudentList[i].name)
+            .update({
+          'courses': event.classRoom.courses.map((x) => x.toMap()).toList(),
+        });
       }
     } on FirebaseException catch (e) {
       ClassRoomError(error: e.code);

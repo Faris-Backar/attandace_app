@@ -91,10 +91,10 @@ class Routers {
       case StudentProfileScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentProfileScreen());
       case StudentViewCourseScreen.routeName:
-        final args = settings.arguments as String;
+        final args = settings.arguments as Course;
         return CupertinoPageRoute(
           builder: (_) => StudentViewCourseScreen(
-            courseName: args,
+            course: args,
           ),
         );
       case LogInScreen.routeName:
