@@ -1,4 +1,5 @@
 import 'package:attandance_app/core/config/config.dart';
+import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/util/util.dart';
@@ -7,8 +8,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentViewCourseScreen extends StatefulWidget {
   final Course course;
+  final Attandance attandance;
   static const routeName = '/StudentViewCourseScreen';
-  const StudentViewCourseScreen({Key? key, required this.course})
+  const StudentViewCourseScreen(
+      {Key? key, required this.course, required this.attandance})
       : super(key: key);
 
   @override
@@ -64,6 +67,29 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                 children: [
                                   const Text('Total Hours Taken : '),
                                   Text(course!.totalHoursTaken),
+                                ],
+                              ),
+                              SizedBox(
+                                height: 10,
+                              ),
+                              DataTable(
+                                columns: [
+                                  DataColumn(label: Text('Date')),
+                                  DataColumn(label: Text('Present')),
+                                ],
+                                rows: [
+                                  DataRow(cells: [
+                                    DataCell(Text('Arya')),
+                                    DataCell(Text('6')),
+                                  ]),
+                                  DataRow(cells: [
+                                    DataCell(Text('John')),
+                                    DataCell(Text('9')),
+                                  ]),
+                                  DataRow(cells: [
+                                    DataCell(Text('Tony')),
+                                    DataCell(Text('8')),
+                                  ]),
                                 ],
                               ),
                             ],

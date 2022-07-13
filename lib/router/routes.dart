@@ -1,3 +1,4 @@
+import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
@@ -91,10 +92,11 @@ class Routers {
       case StudentProfileScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentProfileScreen());
       case StudentViewCourseScreen.routeName:
-        final args = settings.arguments as Course;
+        final args = settings.arguments as List;
         return CupertinoPageRoute(
           builder: (_) => StudentViewCourseScreen(
-            course: args,
+            course: args[0] as Course,
+            attandance: args[1] as Attandance,
           ),
         );
       case LogInScreen.routeName:

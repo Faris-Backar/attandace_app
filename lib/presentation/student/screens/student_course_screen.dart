@@ -63,7 +63,7 @@ class StudentCourseScreen extends StatelessWidget {
                           alignment: Alignment.center,
                           child: Text(
                             student.courses![index].name[0].toUpperCase(),
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
@@ -75,7 +75,10 @@ class StudentCourseScreen extends StatelessWidget {
                         onTap: () {
                           Navigator.of(context).pushNamed(
                             StudentViewCourseScreen.routeName,
-                            arguments: student.courses![index],
+                            arguments: [
+                              student.courses![index],
+                              student.attandance
+                            ],
                           );
                         },
                       ),
