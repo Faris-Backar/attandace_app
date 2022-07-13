@@ -19,6 +19,7 @@ import 'package:attandance_app/presentation/staff/screens/staff_profile_screen.d
 import 'package:attandance_app/presentation/student/screens/student_course_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_home_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_profile_screen.dart';
+import 'package:attandance_app/presentation/student/screens/student_view_course_screen.dart';
 import 'package:flutter/cupertino.dart';
 
 class Routers {
@@ -86,8 +87,16 @@ class Routers {
         return CupertinoPageRoute(builder: (_) => const StudentHomeScreen());
       case StudentCourseScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentCourseScreen());
+
       case StudentProfileScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentProfileScreen());
+      case StudentViewCourseScreen.routeName:
+        final args = settings.arguments as String;
+        return CupertinoPageRoute(
+          builder: (_) => StudentViewCourseScreen(
+            courseName: args,
+          ),
+        );
       case LogInScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const LogInScreen());
       case StaffScreen.routeName:

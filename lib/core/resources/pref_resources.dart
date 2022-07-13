@@ -15,4 +15,8 @@ class PrefResources {
   static const COURSE = 'course';
   // ignore: constant_identifier_names
   static const ATTANDANCE = 'attandance';
+  // ignore: constant_identifier_names
+  static const IS_LOGGEDIN = 'IS_LOGGEDIN';
+  // ignore: constant_identifier_names
+  static const LOGGED_USER_ROLE = 'LOGGED_USER_ROLE';
 }

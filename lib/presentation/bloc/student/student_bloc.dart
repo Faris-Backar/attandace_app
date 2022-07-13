@@ -1,6 +1,4 @@
-import 'dart:convert';
 import 'dart:developer';
-
 import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -22,6 +20,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         _getFilteredStudentsAccordingtoSemester);
     on<DeleteFilteredStudentsAccordingtoSemester>(
         _deleteFilteredStudentsAccordingtoSemester);
+    on<GetIndividualStudentEvent>(_getIndividualStudent);
   }
 
   _createStudent(CreateStudentEvent event, Emitter<StudentState> emit) async {
@@ -100,13 +99,19 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
   }
 
   _getIndividualStudent(
-      GetIndividualStudent event, Emitter<StudentState> emit) async {
+      GetIndividualStudentEvent event, Emitter<StudentState> emit) async {
     emit(StudentInitial());
     emit(StudentLoading());
     try {
-      final response = await _firebaseFirestore.collection('students').get();
-      // final data = json.decode(response);
-
-    } catch (e) {}
+      final response = await _firebaseFirestore
+          .collection('students')
+          .doc(event.userName)
+          .get();
+      final res = Student.fromMap(response.data()!);
+      Student student = res;
+      emit(GetIndividualStudentsLoaded(student: student));
+    } on FirebaseException catch (e) {
+      emit(StudentError(error: e.code));
+    }
   }
 }

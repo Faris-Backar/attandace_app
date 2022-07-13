@@ -1,7 +1,12 @@
 import 'dart:async';
 
+import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
+import 'package:attandance_app/main.dart';
+import 'package:attandance_app/presentation/admin/screens/admin_home_screen.dart';
 import 'package:attandance_app/presentation/screens/login_screen.dart';
+import 'package:attandance_app/presentation/staff/screens/staff_home_screen.dart';
+import 'package:attandance_app/presentation/student/screens/student_home_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -16,9 +21,7 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Timer(const Duration(seconds: 2), () {
-      Navigator.of(context).pushReplacementNamed(LogInScreen.routeName);
-    });
+    checkUserLoggedIn();
   }
 
   @override
@@ -55,5 +58,31 @@ class _SplashScreenState extends State<SplashScreen> {
         ),
       ),
     );
+  }
+
+  checkUserLoggedIn() async {
+    final userLoggedIn = prefs.getBool(PrefResources.IS_LOGGEDIN);
+    final user = prefs.getString(PrefResources.LOGGED_USER_ROLE);
+    await Future.delayed(
+      const Duration(seconds: 2),
+    );
+    if (userLoggedIn == null || userLoggedIn == false) {
+      gotoLogin();
+    } else {
+      if (user == 'admin') {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            AdminHomeScreen.routeName, (route) => false);
+      } else if (user == 'student') {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            StudentHomeScreen.routeName, (route) => false);
+      } else if (user == 'staff') {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+            StaffHomeScreen.routeName, (route) => false);
+      }
+    }
+  }
+
+  gotoLogin() async {
+    Navigator.of(context).pushReplacementNamed(LogInScreen.routeName);
   }
 }
