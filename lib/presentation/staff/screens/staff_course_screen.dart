@@ -82,7 +82,8 @@ class StaffCourseScreen extends StatelessWidget {
                             MarkAttandanceScreen.routeName,
                             arguments: [
                               classRoomList[index].students,
-                              courseList[index].name
+                              courseList[index],
+                              classRoomList[index]
                             ],
                           );
                         },

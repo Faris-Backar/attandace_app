@@ -1,6 +1,9 @@
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/model/attandance_model.dart';
+import 'package:attandance_app/model/classroom.dart';
+import 'package:attandance_app/model/classroom.dart';
+import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,6 +32,15 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
             .collection('attandance')
             .doc(DateFormat('dd-MM-yyyy').format(DateTime.now()))
             .set(event.attandance.toMap());
+
+        await _firebaseFirestore
+            .collection('course')
+            .doc(event.course.name)
+            .update({
+          'totalHoursTaken':
+              (int.parse(event.course.totalHoursTaken) + 1).toString()
+        });
+        emit(MarkAttandanceLoaded());
       }
     } on FirebaseException catch (e) {
       emit(AttandanceError(error: e.message!));

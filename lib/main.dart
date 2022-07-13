@@ -2,6 +2,7 @@ import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
+import 'package:attandance_app/presentation/bloc/attandance/attandance_bloc.dart';
 import 'package:attandance_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
@@ -43,6 +44,9 @@ class AttandanceApp extends StatelessWidget {
         ),
         BlocProvider<ClassroomBloc>(
           create: (context) => ClassroomBloc(),
+        ),
+        BlocProvider<AttandanceBloc>(
+          create: (context) => AttandanceBloc(),
         ),
       ],
       child: MaterialApp(

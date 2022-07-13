@@ -11,9 +11,13 @@ abstract class AttandanceEvent extends Equatable {
 class MarkAttandanceEvent extends AttandanceEvent {
   final List<Student> presentStudentsList;
   final Attandance attandance;
+  final Course course;
+  final ClassRoom classroom;
   const MarkAttandanceEvent({
     required this.presentStudentsList,
     required this.attandance,
+    required this.classroom,
+    required this.course,
   });
   @override
   List<Object> get props => [presentStudentsList];

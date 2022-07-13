@@ -85,7 +85,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     emit(StudentInitial());
     emit(StudentLoading());
     filteredStudentsList = studentList
-        .where((student) => student.semester == event.semester)
+        .where((student) => student.semester.contains(event.semester))
         .toList();
     emit(GetStudentLoaded(studentList: filteredStudentsList));
   }

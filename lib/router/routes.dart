@@ -1,3 +1,4 @@
+import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:attandance_app/presentation/admin/screens/add_student_screen.dart';
@@ -69,7 +70,8 @@ class Routers {
         return CupertinoPageRoute(
           builder: (_) => MarkAttandanceScreen(
             students: arg[0],
-            course: arg[1],
+            course: arg[1] as Course,
+            classRoom: arg[2],
           ),
         );
       case StaffHomeScreen.routeName:

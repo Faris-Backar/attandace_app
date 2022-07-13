@@ -61,10 +61,19 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
     super.initState();
     BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
     BlocProvider.of<StaffBloc>(context).add(GetStaffEvent());
+    BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
     BlocProvider.of<StudentBloc>(context).add(
       GetFilteredStudentsAccordingtoSemester(semester: semValue),
     );
     BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomStudentsEvent());
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    BlocProvider.of<StudentBloc>(context).add(
+      GetFilteredStudentsAccordingtoSemester(semester: semValue),
+    );
   }
 
   @override
@@ -355,6 +364,7 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                     }
                     if (state is GetStudentLoaded) {
                       students = state.studentList;
+                      print(state.studentList);
 
                       if (students.isEmpty) {
                         return const Center(

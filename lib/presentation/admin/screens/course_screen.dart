@@ -27,6 +27,12 @@ class _CourseScreenState extends State<CourseScreen> {
     BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
   }
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+  // }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = Config.screenSize(context);
@@ -114,7 +120,9 @@ class _CourseScreenState extends State<CourseScreen> {
                     ),
                   ),
                 ),
-              );
+              ).then((value) {
+                BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+              });
             },
             icon: const Icon(Icons.add_rounded),
           ),
