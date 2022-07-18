@@ -8,7 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentViewCourseScreen extends StatefulWidget {
   final Course course;
-  final Attandance attandance;
+  final List<Attandance> attandance;
   static const routeName = '/StudentViewCourseScreen';
   const StudentViewCourseScreen(
       {Key? key, required this.course, required this.attandance})
@@ -20,9 +20,22 @@ class StudentViewCourseScreen extends StatefulWidget {
 }
 
 class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
+  List<Attandance> attandanceList = [];
   Course? course;
+  Course? selectedCourse;
+  @override
+  void initState() {
+    super.initState();
+    attandanceList = widget.attandance
+        .where((element) => element.courseName == widget.course.name)
+        .toList();
+    course = widget.course;
+    BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
+    Size screenSize = Config.screenSize(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.course.name),
@@ -38,7 +51,8 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 }
                 if (state is GetCourseLoaded) {
                   List<Course> courseList = state.courseList;
-                  course = courseList.singleWhere(
+
+                  selectedCourse = courseList.singleWhere(
                     (element) => element.name.contains(widget.course.name),
                   );
                   return Card(
@@ -58,38 +72,29 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Course Code : '),
-                                  Text(course!.courseCode),
+                                  Text(selectedCourse!.courseCode),
                                 ],
+                              ),
+                              const SizedBox(
+                                height: 10,
                               ),
                               Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Total Hours Taken : '),
-                                  Text(course!.totalHoursTaken),
+                                  Text(selectedCourse!.totalHoursTaken),
                                 ],
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 height: 10,
                               ),
-                              DataTable(
-                                columns: [
-                                  DataColumn(label: Text('Date')),
-                                  DataColumn(label: Text('Present')),
-                                ],
-                                rows: [
-                                  DataRow(cells: [
-                                    DataCell(Text('Arya')),
-                                    DataCell(Text('6')),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('John')),
-                                    DataCell(Text('9')),
-                                  ]),
-                                  DataRow(cells: [
-                                    DataCell(Text('Tony')),
-                                    DataCell(Text('8')),
-                                  ]),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text('Total Percentage : '),
+                                  Text(selectedCourse!.totalHoursTaken),
                                 ],
                               ),
                             ],
@@ -101,8 +106,66 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 }
                 return Container();
               },
-            )
+            ),
+            const SizedBox(
+              height: 10,
+            ),
+            DataTable(
+              columns: const [
+                DataColumn(label: Text('Date')),
+                DataColumn(label: Text('Present')),
+              ],
+              rows: attandanceList.map((e) {
+                return DataRow(cells: [
+                  DataCell(
+                    Text(e.date),
+                  ),
+                  DataCell(Text(e.isPresent == true ? 'Present' : 'Absent')),
+                ]);
+              }).toList(),
+            ),
           ],
+        ),
+      ),
+      bottomNavigationBar: Material(
+        elevation: 5.0,
+        child: SizedBox(
+          height: screenSize.height * .07,
+          child: Padding(
+            padding: Config.defaultPadding(),
+            child:
+                BlocBuilder<AdminBloc, AdminState>(builder: (context, state) {
+              if (state is GetCourseLoading) {
+                return Util.buildCircularProgressIndicator();
+              }
+              if (state is GetCourseLoaded) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Text('Attandance Percentage'),
+                    Text(
+                      ((attandanceList.length /
+                                  double.parse(
+                                      selectedCourse!.totalHoursTaken)) *
+                              100)
+                          .toString(),
+                      style: TextStyle(
+                        color: ((attandanceList.length /
+                                        double.parse(
+                                            selectedCourse!.totalHoursTaken)) *
+                                    100) <
+                                75.00
+                            ? Colors.red
+                            : Colors.green,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                );
+              }
+              return Container();
+            }),
+          ),
         ),
       ),
     );

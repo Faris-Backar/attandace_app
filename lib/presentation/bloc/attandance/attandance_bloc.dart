@@ -1,9 +1,8 @@
-import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/classroom.dart';
-import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/model/course_attandance.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -30,7 +29,7 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
             .collection(PrefResources.STUDENT)
             .doc(event.presentStudentsList[i].name)
             .collection('attandance')
-            .doc(DateFormat('dd-MM-yyyy').format(DateTime.now()))
+            .doc(DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()))
             .set(event.attandance.toMap());
 
         await _firebaseFirestore
@@ -38,8 +37,13 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
             .doc(event.course.name)
             .update({
           'totalHoursTaken':
-              (int.parse(event.course.totalHoursTaken) + 1).toString()
+              (int.parse(event.course.totalHoursTaken) + 1).toString(),
         });
+        await _firebaseFirestore
+            .collection('course')
+            .doc(event.course.name)
+            .collection('courseTakenDates')
+            .add(CourseAttandance(dateTime: DateTime.now().toString()).toMap());
         emit(MarkAttandanceLoaded());
       }
     } on FirebaseException catch (e) {

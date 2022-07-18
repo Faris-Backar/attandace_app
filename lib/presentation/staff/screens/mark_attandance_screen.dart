@@ -13,14 +13,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class MarkAttandanceScreen extends StatefulWidget {
   static const routeName = '/MarkAttandanceScreen';
-  final List<Student> students;
-  final Course course;
   final ClassRoom classRoom;
+  final Course course;
   const MarkAttandanceScreen({
     Key? key,
-    required this.students,
-    required this.course,
     required this.classRoom,
+    required this.course,
   }) : super(key: key);
 
   @override
@@ -30,11 +28,14 @@ class MarkAttandanceScreen extends StatefulWidget {
 class _MarkAttandanceScreenState extends State<MarkAttandanceScreen> {
   Course? course;
   List<Student> markedStudentsList = [];
+  late List<Student> studentList;
+
   bool checkedValue = false;
   @override
   void initState() {
     super.initState();
     BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+    studentList = widget.classRoom.students;
   }
 
   @override
@@ -47,52 +48,44 @@ class _MarkAttandanceScreenState extends State<MarkAttandanceScreen> {
       ),
       body: Padding(
         padding: Config.defaultPadding(),
-        child: BlocBuilder<AdminBloc, AdminState>(
-          builder: (context, state) {
-            if (state is GetCourseLoaded) {
-              course = state.courseList.singleWhere(
-                  (element) => element.name.contains(widget.course.name));
-            }
-            return ListView.separated(
-                itemBuilder: (context, index) => InkWell(
-                      onTap: () {
-                        setState(() {
-                          if (markedStudentsList
-                              .contains(widget.students[index])) {
-                            markedStudentsList.remove(widget.students[index]);
-                          } else {
-                            markedStudentsList.add(widget.students[index]);
-                          }
-                        });
-                      },
-                      child: Card(
-                        color: getColors(widget.students[index]),
-                        child: Container(
-                          height: 50,
-                          width: screenSize.width,
-                          alignment: Alignment.center,
-                          child: Text(
-                            widget.students[index].name,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
+        child: ListView.separated(
+            itemBuilder: (context, index) => InkWell(
+                  onTap: () {
+                    setState(() {
+                      if (markedStudentsList.contains(studentList[index])) {
+                        markedStudentsList.remove(studentList[index]);
+                      } else {
+                        markedStudentsList.add(studentList[index]);
+                      }
+                    });
+                  },
+                  child: Card(
+                    color: getColors(studentList[index]),
+                    child: Container(
+                      height: 50,
+                      width: screenSize.width,
+                      alignment: Alignment.center,
+                      child: Text(
+                        studentList[index].name,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w600,
                         ),
                       ),
                     ),
-                separatorBuilder: (context, index) => const SizedBox(
-                      height: 10,
-                    ),
-                itemCount: widget.students.length);
-          },
-        ),
+                  ),
+                ),
+            separatorBuilder: (context, index) => const SizedBox(
+                  height: 10,
+                ),
+            itemCount: studentList.length),
       ),
       bottomNavigationBar: BlocConsumer<AttandanceBloc, AttandanceState>(
         listener: (context, state) {
           if (state is MarkAttandanceLoaded) {
             Util.buildSuccessSnackBar(context, content: 'Attandance Marked');
+            Navigator.of(context).pop();
           }
           if (state is AttandanceError) {
             Util.buildFailedSnackBar(context,
@@ -122,7 +115,7 @@ class _MarkAttandanceScreenState extends State<MarkAttandanceScreen> {
                         presentStudentsList: markedStudentsList,
                         attandance: attandance,
                         classroom: widget.classRoom,
-                        course: course!,
+                        course: widget.course,
                       ),
                     );
                   },

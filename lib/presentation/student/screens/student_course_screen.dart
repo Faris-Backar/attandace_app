@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
@@ -32,7 +33,7 @@ class StudentCourseScreen extends StatelessWidget {
             }
             if (state is GetIndividualStudentsLoaded) {
               Student student = state.student;
-              print(student.courses);
+              log(student.toString());
               if (student.courses == null) {
                 return const Center(
                   child: Text(
@@ -77,7 +78,7 @@ class StudentCourseScreen extends StatelessWidget {
                             StudentViewCourseScreen.routeName,
                             arguments: [
                               student.courses![index],
-                              student.attandance
+                              state.attandance,
                             ],
                           );
                         },

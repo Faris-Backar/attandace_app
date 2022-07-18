@@ -1,5 +1,4 @@
 import 'dart:developer';
-
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
@@ -7,20 +6,28 @@ import 'package:attandance_app/main.dart';
 import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
-import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/staff/screens/mark_attandance_screen.dart';
 import 'package:attandance_app/presentation/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class StaffCourseScreen extends StatelessWidget {
+class StaffCourseScreen extends StatefulWidget {
   static const routeName = '/StaffCourseScreen';
   const StaffCourseScreen({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  State<StaffCourseScreen> createState() => _StaffCourseScreenState();
+}
+
+class _StaffCourseScreenState extends State<StaffCourseScreen> {
+  @override
+  void initState() {
+    super.initState();
     BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomEvent());
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: StyleResources.primaryColor,
@@ -38,13 +45,10 @@ class StaffCourseScreen extends StatelessWidget {
                 List<Course> courseList = [];
 
                 classRoomList.map((e) {
-                  print('here in map');
                   for (var i = 0; i < e.courses.length; i++) {
-                    print('here in loop');
                     bool response =
                         e.courses[i].staff!.name.contains(getUsername());
                     if (response) {
-                      print('here ');
                       return courseList.add(e.courses[i]);
                     }
                   }
@@ -68,24 +72,24 @@ class StaffCourseScreen extends StatelessWidget {
                   ),
                   itemCount: courseList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    var classroom = classRoomList.singleWhere((element) =>
-                        element.courses.contains(courseList[index]));
+                    var classroom = classRoomList
+                        .where((element) =>
+                            element.courses.contains(courseList[index]))
+                        .toList();
                     return Card(
                       elevation: 5,
                       child: ListTile(
                         title: Text(courseList[index].name),
-                        subtitle: Text(classroom.name),
+                        subtitle: Text(classroom[0].name),
                         trailing: const Icon(Icons.arrow_forward_ios_outlined),
                         onTap: () {
                           print(classRoomList[index].students);
                           Navigator.of(context).pushNamed(
-                            MarkAttandanceScreen.routeName,
-                            arguments: [
-                              classRoomList[index].students,
-                              courseList[index],
-                              classRoomList[index]
-                            ],
-                          );
+                              MarkAttandanceScreen.routeName,
+                              arguments: [
+                                classroom[0],
+                                courseList[index],
+                              ]);
                         },
                       ),
                     );

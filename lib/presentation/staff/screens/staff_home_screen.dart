@@ -5,6 +5,7 @@ import 'package:attandance_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/screens/login_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/staff_course_screen.dart';
+import 'package:attandance_app/presentation/staff/screens/view_assigned_classes_screen.dart';
 import 'package:attandance_app/presentation/util/util.dart';
 import 'package:attandance_app/presentation/widgets/home_card_widget.dart';
 import 'package:flutter/material.dart';
@@ -73,11 +74,14 @@ class StaffHomeScreen extends StatelessWidget {
               const SizedBox(
                 height: 20,
               ),
-              // HomeCardWidget(
-              //   screenSize: screenSize,
-              //   onTap: () {},
-              //   title: '',
-              // ),
+              HomeCardWidget(
+                screenSize: screenSize,
+                onTap: () {
+                  Navigator.of(context)
+                      .pushNamed(ViewAssignedClassScreen.routeName);
+                },
+                title: 'Classes Assigned',
+              ),
               // const SizedBox(
               //   height: 20,
               // ),

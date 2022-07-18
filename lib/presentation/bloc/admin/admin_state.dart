@@ -17,11 +17,22 @@ class GetCourseLoading extends AdminState {}
 
 class GetCourseLoaded extends AdminState {
   final List<Course> courseList;
+  final List<CourseAttandance>? courseAttandace;
   const GetCourseLoaded({
     required this.courseList,
+    this.courseAttandace,
   });
   @override
   List<Object> get props => [courseList];
+}
+
+class GetCourseAttandanceLoaded extends AdminState {
+  final List<CourseAttandance> courseAttandace;
+  const GetCourseAttandanceLoaded({
+    required this.courseAttandace,
+  });
+  @override
+  List<Object> get props => [courseAttandace];
 }
 
 class AdminError extends AdminState {

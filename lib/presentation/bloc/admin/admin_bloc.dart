@@ -1,4 +1,5 @@
 import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/model/course_attandance.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -13,6 +14,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
   AdminBloc() : super(AdminInitial()) {
     on<CreateCourseEvent>(_createCourse);
     on<GetCourseEvent>(_getCourse);
+    on<GetCourseAttandaceEvent>(_getCourseAttandanceEvent);
   }
 
   _createCourse(CreateCourseEvent event, Emitter<AdminState> emit) async {
@@ -44,5 +46,25 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       emit(AdminError(error: e.code));
     }
     emit(GetCourseLoaded(courseList: courseList));
+  }
+
+  _getCourseAttandanceEvent(
+      GetCourseAttandaceEvent event, Emitter<AdminState> emit) async {
+    emit(GetCourseLoading());
+    try {
+      final res = await _firebaseFirestore
+          .collection('course')
+          .doc(event.courseName)
+          .collection('attandance')
+          .get();
+      final response = res.docs
+          .map((docSnap) => CourseAttandance.fromMap(docSnap.data()))
+          .toList();
+      List<CourseAttandance> courseAttandace = response;
+      print(courseAttandace);
+      emit(GetCourseAttandanceLoaded(courseAttandace: courseAttandace));
+    } catch (e) {
+      rethrow;
+    }
   }
 }

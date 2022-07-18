@@ -25,7 +25,9 @@ class GetStudentLoaded extends StudentState {
 
 class GetIndividualStudentsLoaded extends StudentState {
   final Student student;
+  final List<Attandance> attandance;
   const GetIndividualStudentsLoaded({
+    required this.attandance,
     required this.student,
   });
   @override

@@ -6,7 +6,6 @@ import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
-import 'package:attandance_app/presentation/admin/screens/add_student_screen.dart';
 import 'package:attandance_app/presentation/admin/widgets/drop_down_widget.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
@@ -40,7 +39,7 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
   String? courseValue;
   String subjectValue = '';
   String staffValue = '';
-  String? staffAdvisorValue;
+  String staffAdvisorValue = '';
   List<Course> subjectList = [];
   List<Staff> staffSelectedList = [];
   Staff? selectedStaff;
@@ -154,13 +153,15 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                       for (var i = 0; i < state.staffList.length; i++) {
                         staffAdvisor.add(state.staffList[i].name);
                       }
-                      staffAdvisorValue = staffAdvisor[0];
+                      if (staffAdvisorValue == '') {
+                        staffAdvisorValue = staffAdvisor[0];
+                      }
                       selectedStaff = state.staffList.singleWhere((element) =>
-                          element.name.contains(staffAdvisorValue!));
+                          element.name.contains(staffAdvisorValue));
                       log(staffAdvisor.toString());
                       return DropDownFieldWidget(
                           title: 'Staff Advisor',
-                          value: staffAdvisorValue!,
+                          value: staffAdvisorValue,
                           item: staffAdvisor,
                           onChanged: (value) {
                             setState(() {
@@ -261,13 +262,14 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                                         staffValue = staff[0];
                                         log(staff.toString());
                                         return DropDownFieldWidget(
-                                            title: 'Staff Advisor',
+                                            title: 'Staff',
                                             value: staffValue,
                                             item: staff,
                                             onChanged: (value) {
                                               setState(() {
                                                 staffValue = value!;
                                               });
+                                              log(staffValue);
                                             });
                                       }
                                       return Container();
@@ -471,11 +473,10 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                           if (formKey.currentState!.validate()) {
                             final classroom = ClassRoom(
                               name: nameController.text,
-                              staffAdvicer: staffAdvisorValue!,
+                              staffAdvicer: staffAdvisorValue,
                               students: students,
                               courses: selectedcourseList,
                             );
-
                             BlocProvider.of<ClassroomBloc>(context).add(
                               CreateClassRoomEvent(
                                 classRoom: classroom,

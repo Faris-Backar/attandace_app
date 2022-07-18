@@ -52,8 +52,9 @@ class StudentHomeScreen extends StatelessWidget {
             StudentHomeCardWidget(
                 screenSize: screenSize,
                 onTap: () {
-                  Navigator.of(context)
-                      .pushNamed(StudentCourseScreen.routeName);
+                  Navigator.of(context).pushNamed(
+                    StudentCourseScreen.routeName,
+                  );
                 },
                 title: 'View Attandance'),
             const SizedBox(
