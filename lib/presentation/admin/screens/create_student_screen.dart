@@ -2,7 +2,6 @@ import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:attandance_app/presentation/admin/widgets/drop_down_widget.dart';
-import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
 import 'package:attandance_app/presentation/widgets/default_button_widget.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
@@ -70,18 +69,31 @@ class _CreateStudentScreenState extends State<CreateStudentScreen> {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: StyleResources.primaryColor,
-        title: const Text(
-          'Create Student',
-          style: TextStyle(
+        title: Text(
+          widget.student != null ? 'Update Student' : 'Create Student',
+          style: const TextStyle(
             color: StyleResources.accentColor,
           ),
         ),
         actions: [
           if (widget.student != null)
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.edit_rounded),
-            ),
+            isEnabled
+                ? IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isEnabled = false;
+                      });
+                    },
+                    icon: const Icon(Icons.close),
+                  )
+                : IconButton(
+                    onPressed: () {
+                      setState(() {
+                        isEnabled = true;
+                      });
+                    },
+                    icon: const Icon(Icons.edit_rounded),
+                  ),
         ],
       ),
       body: Padding(
@@ -101,7 +113,6 @@ class _CreateStudentScreenState extends State<CreateStudentScreen> {
               registrationController.clear();
               usernameController.clear();
               passwordController.clear();
-
               Navigator.of(context).pop();
             }
           },
@@ -147,30 +158,41 @@ class _CreateStudentScreenState extends State<CreateStudentScreen> {
                     inputController: usernameController,
                     textInputType: TextInputType.text,
                     hintText: '',
-                    validatorFunction: (String? value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a valid email';
+                    validatorFunction: (value) {
+                      String pattern =
+                          r"^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                          r"{0,253}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]"
+                          r"{0,253}[a-zA-Z0-9])?)*$";
+                      RegExp regex = RegExp(pattern);
+                      if (value == null ||
+                          value.isEmpty ||
+                          !regex.hasMatch(value)) {
+                        return 'Enter a valid email address';
                       }
                       return null;
                     },
-                    label: 'Username',
+                    label: 'Email',
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  TextInputFormFieldWidget(
-                    isEnabled: isEnabled,
-                    inputController: passwordController,
-                    textInputType: TextInputType.text,
-                    hintText: '',
-                    validatorFunction: (String? value) {
-                      if (value!.isEmpty) {
-                        return 'Please enter a valid password';
-                      }
-                      return null;
-                    },
-                    label: 'Password',
-                  ),
+                  if (widget.student == null)
+                    TextInputFormFieldWidget(
+                      isEnabled: isEnabled,
+                      inputController: passwordController,
+                      textInputType: TextInputType.text,
+                      hintText: '',
+                      validatorFunction: (String? value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter a valid password';
+                        } else if (value.length < 6) {
+                          return 'Please Enter a password with minimum 6 chars';
+                        } else {
+                          return null;
+                        }
+                      },
+                      label: 'Password',
+                    ),
                   const SizedBox(
                     height: 20,
                   ),
@@ -220,37 +242,50 @@ class _CreateStudentScreenState extends State<CreateStudentScreen> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: DefaultButtonWidget(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          final student = Student(
-                            name: nameController.text,
-                            registrationNumber: registrationController.text,
-                            email: usernameController.text,
-                            password: passwordController.text,
-                            department: branchValue,
-                            year: int.parse(yearValue),
-                            semester: semValue,
+                  if (isEnabled)
+                    BlocBuilder<StudentBloc, StudentState>(
+                      builder: (context, state) {
+                        if (state is StudentLoading) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                              color: StyleResources.primaryColor,
+                            ),
                           );
-                          if (widget.student != null) {
-                            BlocProvider.of<StudentBloc>(context).add(
-                              UpdateStudentEvent(
-                                  student: student, index: widget.index!),
-                            );
-                          } else {
-                            BlocProvider.of<StudentBloc>(context).add(
-                                CreateStudentEvent(
-                                    student: student,
-                                    password: passwordController.text));
-                          }
                         }
+                        return Align(
+                          alignment: Alignment.bottomCenter,
+                          child: DefaultButtonWidget(
+                            onTap: () {
+                              if (formKey.currentState!.validate()) {
+                                final student = Student(
+                                  name: nameController.text,
+                                  registrationNumber:
+                                      registrationController.text,
+                                  email: usernameController.text,
+                                  password: passwordController.text,
+                                  department: branchValue,
+                                  year: yearValue,
+                                  semester: semValue,
+                                );
+                                if (widget.student != null) {
+                                  BlocProvider.of<StudentBloc>(context).add(
+                                    UpdateStudentEvent(
+                                        student: student, index: widget.index!),
+                                  );
+                                } else {
+                                  BlocProvider.of<StudentBloc>(context).add(
+                                      CreateStudentEvent(
+                                          student: student,
+                                          password: passwordController.text));
+                                }
+                              }
+                            },
+                            title: widget.student != null ? 'Update' : 'Create',
+                            screenSize: screenSize,
+                          ),
+                        );
                       },
-                      title: 'Create',
-                      screenSize: screenSize,
                     ),
-                  ),
                 ],
               ),
             ),

@@ -27,6 +27,12 @@ class _CourseScreenState extends State<CourseScreen> {
     BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
   }
 
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+  // }
+
   @override
   Widget build(BuildContext context) {
     Size screenSize = Config.screenSize(context);
@@ -93,15 +99,16 @@ class _CourseScreenState extends State<CourseScreen> {
                               onTap: () {
                                 if (formKey.currentState!.validate()) {
                                   final course = Course(
+                                      totalHoursTaken: '0',
                                       name: nameController.text,
                                       courseCode: courseCodeController.text);
                                   BlocProvider.of<AdminBloc>(context)
                                       .add(CreateCourseEvent(course: course));
-                                  BlocProvider.of<AdminBloc>(context)
-                                      .add(GetCourseEvent());
                                   nameController.clear();
                                   courseCodeController.clear();
                                   Navigator.of(context).pop();
+                                  BlocProvider.of<AdminBloc>(context)
+                                      .add(GetCourseEvent());
                                 }
                               },
                               title: 'Create Course',
@@ -113,6 +120,10 @@ class _CourseScreenState extends State<CourseScreen> {
                     ),
                   ),
                 ),
+              ).then(
+                (value) {
+                  BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+                },
               );
             },
             icon: const Icon(Icons.add_rounded),
@@ -123,6 +134,9 @@ class _CourseScreenState extends State<CourseScreen> {
         padding: Config.defaultPadding(),
         child: BlocBuilder<AdminBloc, AdminState>(
           builder: (context, state) {
+            if (state is AdminLoaded) {
+              BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+            }
             if (state is GetCourseLoading) {
               return Center(
                 child: CircularProgressIndicator(
@@ -130,6 +144,7 @@ class _CourseScreenState extends State<CourseScreen> {
                 ),
               );
             }
+
             if (state is GetCourseLoaded) {
               courseList = state.courseList;
               if (courseList.isEmpty) {

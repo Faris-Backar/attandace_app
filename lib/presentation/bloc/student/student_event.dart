@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'student_bloc.dart';
 
 abstract class StudentEvent extends Equatable {
@@ -38,4 +39,35 @@ class DeleteStudentEvent extends StudentEvent {
   });
   @override
   List<Object> get props => [index];
+}
+
+class GetFilteredStudentsAccordingtoSemester extends StudentEvent {
+  final String semester;
+  final String branch;
+  const GetFilteredStudentsAccordingtoSemester({
+    required this.semester,
+    required this.branch,
+  });
+
+  @override
+  List<Object> get props => [semester, branch];
+}
+
+class DeleteFilteredStudentsAccordingtoSemester extends StudentEvent {
+  final Student student;
+  const DeleteFilteredStudentsAccordingtoSemester({
+    required this.student,
+  });
+
+  @override
+  List<Object> get props => [student];
+}
+
+class GetIndividualStudentEvent extends StudentEvent {
+  final String userName;
+  const GetIndividualStudentEvent({
+    required this.userName,
+  });
+  @override
+  List<Object> get props => [userName];
 }

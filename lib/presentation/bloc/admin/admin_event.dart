@@ -18,4 +18,11 @@ class CreateCourseEvent extends AdminEvent {
 
 class GetCourseEvent extends AdminEvent {}
 
-class GetClassRoomEvent extends AdminEvent {}
+class GetCourseAttandaceEvent extends AdminEvent {
+  final String courseName;
+  const GetCourseAttandaceEvent({
+    required this.courseName,
+  });
+}
+
+class DeleteCourse extends AdminEvent {}

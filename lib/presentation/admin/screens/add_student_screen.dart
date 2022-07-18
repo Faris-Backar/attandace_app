@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddStudentScreen extends StatefulWidget {
+  final String semester;
   static const routeName = '/AddStudentScreen';
-  const AddStudentScreen({Key? key}) : super(key: key);
+  const AddStudentScreen({Key? key, required this.semester}) : super(key: key);
 
   @override
   State<AddStudentScreen> createState() => _StudentScreenState();
@@ -56,8 +57,12 @@ class _StudentScreenState extends State<AddStudentScreen> {
                 ),
               );
             }
+
             if (state is GetStudentLoaded) {
-              List<Student> studentList = state.studentList;
+              List<Student> students = state.studentList;
+              studentList = students
+                  .where((student) => student.semester == widget.semester)
+                  .toList();
               if (studentList.isEmpty) {
                 return const Center(
                   child: Text(
@@ -73,6 +78,7 @@ class _StudentScreenState extends State<AddStudentScreen> {
                 separatorBuilder: (context, index) => const SizedBox(
                   height: 10,
                 ),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 itemCount: studentList.length,
                 itemBuilder: (context, index) => Card(

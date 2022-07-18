@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'student_bloc.dart';
 
 abstract class StudentState extends Equatable {
@@ -20,6 +21,17 @@ class GetStudentLoaded extends StudentState {
   });
   @override
   List<Object> get props => [studentList];
+}
+
+class GetIndividualStudentsLoaded extends StudentState {
+  final Student student;
+  final List<Attandance> attandance;
+  const GetIndividualStudentsLoaded({
+    required this.attandance,
+    required this.student,
+  });
+  @override
+  List<Object> get props => [student];
 }
 
 class StudentError extends StudentState {

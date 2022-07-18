@@ -50,3 +50,12 @@ class AddClassRoomStudentsEvent extends ClassroomEvent {
 }
 
 class GetClassRoomStudentsEvent extends ClassroomEvent {}
+
+class DeleteClassRoomStudentsEvent extends ClassroomEvent {
+  final Course course;
+  const DeleteClassRoomStudentsEvent({
+    required this.course,
+  });
+  @override
+  List<Object> get props => [course];
+}

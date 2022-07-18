@@ -116,9 +116,9 @@ class _TextInputFormFieldWidgetState extends State<TextInputFormFieldWidget> {
             ),
           ),
         ),
-        errorBorder: OutlineInputBorder(
+        errorBorder: const OutlineInputBorder(
           borderSide: BorderSide(color: StyleResources.errorColor, width: 1.0),
-          borderRadius: const BorderRadius.all(
+          borderRadius: BorderRadius.all(
             Radius.circular(5.0),
           ),
         ),

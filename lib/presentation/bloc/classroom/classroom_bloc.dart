@@ -1,6 +1,6 @@
-import 'dart:developer';
-
 import 'package:attandance_app/model/classroom.dart';
+import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -18,6 +18,7 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
     on<GetClassRoomEvent>(_getClassRoom);
     on<AddClassRoomStudentsEvent>(_addSelectedStudents);
     on<GetClassRoomStudentsEvent>(_getClassRoomStudents);
+    on<DeleteClassRoomStudentsEvent>(_deleteClassRoomStudents);
   }
   _createClassRoom(
       CreateClassRoomEvent event, Emitter<ClassroomState> emit) async {
@@ -29,6 +30,22 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
           .collection('classroom')
           .doc(event.classRoom.name)
           .set(event.classRoom.toMap());
+      List<Student> classroomStudentList = event.classRoom.students;
+      List<Course> courseList = event.classRoom.courses;
+      for (var i = 0; i < classroomStudentList.length; i++) {
+        await _firebaseFirestore
+            .collection('student')
+            .doc(classroomStudentList[i].name)
+            .update({
+          'courses': event.classRoom.courses.map((x) => x.toMap()).toList(),
+        });
+        await _firebaseFirestore
+            .collection('course')
+            .doc(courseList[i].name)
+            .update({
+          'students': event.classRoom.students.map((e) => e.toMap()).toList(),
+        });
+      }
     } on FirebaseException catch (e) {
       ClassRoomError(error: e.code);
     }
@@ -61,6 +78,13 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
 
   _getClassRoomStudents(
       GetClassRoomStudentsEvent event, Emitter<ClassroomState> emit) {
+    emit(ClassroomInitial());
+    emit(ClassroomLoading());
+    emit(GetClassRoomStudents(studentList: studentsList));
+  }
+
+  _deleteClassRoomStudents(
+      DeleteClassRoomStudentsEvent event, Emitter<ClassroomState> emit) {
     emit(ClassroomInitial());
     emit(ClassroomLoading());
     emit(GetClassRoomStudents(studentList: studentsList));

@@ -23,12 +23,6 @@ class _StudentScreenState extends State<StudentScreen> {
   }
 
   @override
-  void didChangeDependencies() {
-    BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
-    super.didChangeDependencies();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -41,10 +35,11 @@ class _StudentScreenState extends State<StudentScreen> {
         ),
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(CreateStudentScreen.routeName);
-              },
-              icon: const Icon(Icons.add_rounded))
+            onPressed: () {
+              Navigator.of(context).pushNamed(CreateStudentScreen.routeName);
+            },
+            icon: const Icon(Icons.add_rounded),
+          ),
         ],
       ),
       body: Padding(
@@ -57,6 +52,9 @@ class _StudentScreenState extends State<StudentScreen> {
                   color: Colors.black,
                 ),
               );
+            }
+            if (state is CreateStudentLoaded) {
+              BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
             }
             if (state is GetStudentLoaded) {
               studentList = state.studentList;

@@ -16,6 +16,7 @@ class ClassScreen extends StatefulWidget {
 
 class _ClassScreenState extends State<ClassScreen> {
   List<ClassRoom> classRoomList = [];
+
   @override
   void initState() {
     super.initState();
