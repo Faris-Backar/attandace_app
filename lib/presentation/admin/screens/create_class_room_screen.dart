@@ -19,8 +19,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CreateClassRoomScreen extends StatefulWidget {
+  final ClassRoom? classRoom;
   static const routeName = '/CreateClassRoomScreen';
-  const CreateClassRoomScreen({Key? key}) : super(key: key);
+  const CreateClassRoomScreen({Key? key, this.classRoom}) : super(key: key);
 
   @override
   State<CreateClassRoomScreen> createState() => _CreateClassRoomState();
@@ -67,12 +68,19 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
     super.initState();
     BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
     BlocProvider.of<StaffBloc>(context).add(GetStaffEvent());
-    BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
-    BlocProvider.of<StudentBloc>(context).add(
-      GetFilteredStudentsAccordingtoSemester(
-          semester: semValue, branch: branchValue),
-    );
-    BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomStudentsEvent());
+    if (widget.classRoom == null) {
+      BlocProvider.of<StudentBloc>(context).add(GetStudentEvent());
+      BlocProvider.of<StudentBloc>(context).add(
+        GetFilteredStudentsAccordingtoSemester(
+            semester: semValue, branch: branchValue),
+      );
+      BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomStudentsEvent());
+    } else {
+      nameController.text = widget.classRoom!.name;
+      // semValue=widget.classRoom!.
+      staffAdvisorValue = widget.classRoom!.staffAdvicer;
+      subjectList = widget.classRoom!.courses;
+    }
   }
 
   @override
@@ -87,9 +95,6 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
             color: StyleResources.accentColor,
           ),
         ),
-        actions: [
-          IconButton(onPressed: () {}, icon: const Icon(Icons.add_rounded))
-        ],
       ),
       body: Padding(
         padding: Config.defaultPadding(),

@@ -1,5 +1,7 @@
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
+import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/bloc/auth/auth_bloc.dart';
 import 'package:attandance_app/presentation/screens/login_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_course_screen.dart';
@@ -84,6 +86,22 @@ class StudentHomeScreen extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  checktotalAttandance() {
+    return BlocBuilder<AdminBloc, AdminState>(
+      builder: (context, state) {
+        if (state is GetCourseLoading) {
+          return Util.buildCircularProgressIndicator();
+        }
+        if (state is GetCourseLoaded) {
+          // List<Course> courseList=state.courseList.where((element) => element.name==).toList();
+          // return
+
+        }
+        return Container();
+      },
     );
   }
 }

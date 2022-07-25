@@ -5,6 +5,7 @@ import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/presentation/admin/screens/create_staff_screen.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
+import 'package:attandance_app/presentation/widgets/slidable_action_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -78,41 +79,51 @@ class _StaffScreenState extends State<StaffScreen> {
                   ),
                   shrinkWrap: true,
                   itemCount: staffList.length,
-                  itemBuilder: (context, index) => Card(
-                    color: Colors.grey[200],
-                    elevation: 5.0,
-                    child: ListTile(
-                      onTap: () => Navigator.of(context).pushNamed(
-                          CreateStaffScreen.routeName,
-                          arguments: [staffList[index], index]),
-                      leading: Container(
-                        height: 40,
-                        width: 40,
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: StyleResources.primaryColor,
+                  itemBuilder: (context, index) => SlidableActionWidget(
+                    index: index,
+                    ontap: () async {
+                      BlocProvider.of<StaffBloc>(context).add(
+                        DeleteStaffEvent(staff: staffList[index]),
+                      );
+                      Navigator.of(context).pop();
+                      BlocProvider.of<StaffBloc>(context).add(GetStaffEvent());
+                    },
+                    child: Card(
+                      color: Colors.grey[200],
+                      elevation: 5.0,
+                      child: ListTile(
+                        onTap: () => Navigator.of(context).pushNamed(
+                            CreateStaffScreen.routeName,
+                            arguments: [staffList[index], index]),
+                        leading: Container(
+                          height: 40,
+                          width: 40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: StyleResources.primaryColor,
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            staffList[index].name[0].toUpperCase(),
+                            style: const TextStyle(
+                                color: StyleResources.accentColor,
+                                fontWeight: FontWeight.w600),
+                          ),
                         ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          staffList[index].name[0].toUpperCase(),
+                        title: Text(
+                          staffList[index].name,
                           style: const TextStyle(
-                              color: StyleResources.accentColor,
-                              fontWeight: FontWeight.w600),
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
-                      ),
-                      title: Text(
-                        staffList[index].name,
-                        style: const TextStyle(
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
+                        subtitle: Text(staffList[index].branch),
+                        trailing: IconButton(
+                          icon: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                          ),
+                          onPressed: () {},
                         ),
-                      ),
-                      subtitle: Text(staffList[index].branch),
-                      trailing: IconButton(
-                        icon: const Icon(
-                          Icons.arrow_forward_ios_rounded,
-                        ),
-                        onPressed: () {},
                       ),
                     ),
                   ),

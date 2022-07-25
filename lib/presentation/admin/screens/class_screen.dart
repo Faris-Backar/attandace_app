@@ -107,7 +107,12 @@ class _ClassScreenState extends State<ClassScreen> {
                       ),
                       onPressed: () {},
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.of(context).pushNamed(
+                        CreateClassRoomScreen.routeName,
+                        arguments: classRoomList[index],
+                      );
+                    },
                   ),
                 ),
               );

@@ -2,10 +2,12 @@ import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/presentation/admin/screens/admin_home_screen.dart';
 import 'package:attandance_app/presentation/bloc/auth/auth_bloc.dart';
+import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/staff/screens/staff_home_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_home_screen.dart';
 import 'package:attandance_app/presentation/widgets/default_button_widget.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -101,6 +103,7 @@ class _LogInScreenState extends State<LogInScreen> {
                               listener: (context, state) {
                                 if (state is AuthLoaded) {
                                   String role = state.role;
+
                                   if (role == 'admin') {
                                     Navigator.of(context)
                                         .pushNamedAndRemoveUntil(
@@ -166,4 +169,19 @@ class _LogInScreenState extends State<LogInScreen> {
       ),
     );
   }
+
+  // bool isUserAvailble({required String uid, required String role}) async {
+  //   var list = [];
+  //   if (role == 'staff') {
+  //     BlocBuilder<StaffBloc, StaffState>(
+  //       builder: (context, state) {
+  //         if (state is GetStaffLoaded) {
+  //           list = state.staffList;
+  //         }
+  //         return Container();
+  //       },
+  //     );
+  //     list.where((element) => element.)
+  //   }
+  // }
 }

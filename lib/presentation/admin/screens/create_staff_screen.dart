@@ -117,19 +117,20 @@ class _CreateStaffScreenState extends State<CreateStaffScreen> {
                     const SizedBox(
                       height: 20,
                     ),
-                    TextInputFormFieldWidget(
-                      isEnabled: isEnabled,
-                      inputController: passwordController,
-                      textInputType: TextInputType.text,
-                      hintText: '',
-                      validatorFunction: (String? value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter a valid password';
-                        }
-                        return null;
-                      },
-                      label: 'Password',
-                    ),
+                    if (widget.staff == null)
+                      TextInputFormFieldWidget(
+                        isEnabled: isEnabled,
+                        inputController: passwordController,
+                        textInputType: TextInputType.text,
+                        hintText: '',
+                        validatorFunction: (String? value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter a valid password';
+                          }
+                          return null;
+                        },
+                        label: 'Password',
+                      ),
                     const SizedBox(
                       height: 20,
                     ),
@@ -205,11 +206,17 @@ class _CreateStaffScreenState extends State<CreateStaffScreen> {
                             email: usernameController.text,
                             branch: branchValue,
                           );
-
-                          BlocProvider.of<StaffBloc>(context).add(
-                              CreateStaffEvent(
-                                  staff: staff,
-                                  password: passwordController.text));
+                          if (widget.staff == null) {
+                            BlocProvider.of<StaffBloc>(context).add(
+                                CreateStaffEvent(
+                                    staff: staff,
+                                    password: passwordController.text));
+                          } else {
+                            BlocProvider.of<StaffBloc>(context).add(
+                                UpdateStaffEvent(
+                                    staff: staff,
+                                    userName: widget.staff!.name));
+                          }
                         }
                       },
                       title: widget.staff != null ? 'Update' : 'Create',

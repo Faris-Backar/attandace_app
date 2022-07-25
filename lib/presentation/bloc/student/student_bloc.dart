@@ -11,6 +11,7 @@ part 'student_state.dart';
 
 class StudentBloc extends Bloc<StudentEvent, StudentState> {
   final _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   List<Student> studentList = [];
   List<Student> filteredStudentsList = [];
   StudentBloc() : super(StudentInitial()) {
@@ -22,6 +23,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     on<DeleteFilteredStudentsAccordingtoSemester>(
         _deleteFilteredStudentsAccordingtoSemester);
     on<GetIndividualStudentEvent>(_getIndividualStudent);
+    on<DeleteStudentEvent>(_deleteStudents);
   }
 
   _createStudent(CreateStudentEvent event, Emitter<StudentState> emit) async {
@@ -68,15 +70,20 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
     emit(GetStudentLoaded(studentList: studentList));
   }
 
-  _updateStudent(UpdateStudentEvent event, Emitter<StudentState> emit) {
+  _updateStudent(UpdateStudentEvent event, Emitter<StudentState> emit) async {
     emit(StudentInitial());
     emit(StudentLoading());
-    studentList.removeAt(event.index);
-    studentList.insert(
-      event.index,
-      event.student,
-    );
-    emit(CreateStudentLoaded());
+    try {
+      await _firebaseFirestore
+          .collection('student')
+          .doc(event.student.name)
+          .set(event.student.toMap());
+      await _firebaseFirestore.collection('student').doc(event.name).delete();
+      emit(CreateStudentLoaded());
+    } catch (e) {
+      log(e.toString());
+      emit(StudentError(error: e.toString()));
+    }
   }
 
   _getFilteredStudentsAccordingtoSemester(
@@ -128,6 +135,26 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           student: student, attandance: attandanceList));
     } on FirebaseException catch (e) {
       emit(StudentError(error: e.code));
+    }
+  }
+
+  _deleteStudents(DeleteStudentEvent event, Emitter<StudentState> emit) async {
+    emit(StudentInitial());
+    emit(StudentLoading());
+    try {
+      await _firebaseFirestore
+          .collection('student')
+          .doc(event.username)
+          .delete();
+      await _firebaseFirestore
+          .collection('student')
+          .doc(event.username)
+          .collection('attandance')
+          .doc()
+          .delete();
+      emit(GetStudentLoaded(studentList: filteredStudentsList));
+    } catch (e) {
+      emit(StudentError(error: e.toString()));
     }
   }
 }

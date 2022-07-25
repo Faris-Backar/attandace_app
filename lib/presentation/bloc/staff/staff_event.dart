@@ -23,20 +23,20 @@ class GetStaffEvent extends StaffEvent {}
 
 class UpdateStaffEvent extends StaffEvent {
   final Staff staff;
-  final String index;
+  final String userName;
   const UpdateStaffEvent({
     required this.staff,
-    required this.index,
+    required this.userName,
   });
   @override
-  List<Object> get props => [staff, index];
+  List<Object> get props => [staff, userName];
 }
 
 class DeleteStaffEvent extends StaffEvent {
-  final int index;
+  final Staff staff;
   const DeleteStaffEvent({
-    required this.index,
+    required this.staff,
   });
   @override
-  List<Object> get props => [index];
+  List<Object> get props => [staff];
 }

@@ -24,21 +24,23 @@ class GetStudentEvent extends StudentEvent {}
 class UpdateStudentEvent extends StudentEvent {
   final Student student;
   final int index;
+  final String name;
   const UpdateStudentEvent({
     required this.student,
     required this.index,
+    required this.name,
   });
   @override
   List<Object> get props => [student, index];
 }
 
 class DeleteStudentEvent extends StudentEvent {
-  final int index;
+  final String username;
   const DeleteStudentEvent({
-    required this.index,
+    required this.username,
   });
   @override
-  List<Object> get props => [index];
+  List<Object> get props => [username];
 }
 
 class GetFilteredStudentsAccordingtoSemester extends StudentEvent {

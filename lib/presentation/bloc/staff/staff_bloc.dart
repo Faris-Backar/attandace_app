@@ -1,5 +1,6 @@
+import 'dart:developer';
+
 import 'package:attandance_app/model/staff.dart';
-import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -10,10 +11,13 @@ part 'staff_state.dart';
 
 class StaffBloc extends Bloc<StaffEvent, StaffState> {
   List<Staff> staffList = [];
-  FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
+  final _firebaseFirestore = FirebaseFirestore.instance;
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   StaffBloc() : super(StaffInitial()) {
     on<CreateStaffEvent>(_createStaff);
     on<GetStaffEvent>(_getStaff);
+    on<DeleteStaffEvent>(_deleteStaff);
+    on<UpdateStaffEvent>(_updateStaff);
   }
 
   _createStaff(CreateStaffEvent event, Emitter<StaffState> emit) async {
@@ -57,5 +61,40 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
       emit(StaffError(error: e.code));
     }
     emit(GetStaffLoaded(staffList: staffList));
+  }
+
+  _deleteStaff(DeleteStaffEvent event, Emitter<StaffState> emit) async {
+    emit(StaffInitial());
+    emit(StaffLoading());
+    try {
+      await _firebaseFirestore
+          .collection('staff')
+          .doc(event.staff.name)
+          .delete();
+      emit(DeleteStaffLoaded());
+    } catch (e) {
+      print(e.toString());
+      emit(
+        StaffError(
+          error: e.toString(),
+        ),
+      );
+    }
+  }
+
+  _updateStaff(UpdateStaffEvent event, Emitter<StaffState> emit) async {
+    emit(StaffInitial());
+    emit(StaffLoading());
+    try {
+      await _firebaseFirestore
+          .collection('staff')
+          .doc(event.staff.name)
+          .set(event.staff.toMap());
+      await _firebaseFirestore.collection('staff').doc(event.userName).delete();
+      emit(CreateStaffLoaded());
+    } catch (e) {
+      log(e.toString());
+      emit(StaffError(error: e.toString()));
+    }
   }
 }
