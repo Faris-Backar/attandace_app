@@ -79,6 +79,7 @@ class StudentCourseScreen extends StatelessWidget {
                             arguments: [
                               student.courses![index],
                               state.attandance,
+                              student.assignedClass,
                             ],
                           );
                         },

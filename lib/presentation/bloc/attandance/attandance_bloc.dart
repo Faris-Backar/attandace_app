@@ -32,17 +32,19 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
             .doc(DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()))
             .set(event.attandance.toMap());
 
+        // await _firebaseFirestore
+        //     .collection('course')
+        //     .doc(event.course.name)
+        //     .collection(event.classroom.name)
+        //     .doc()
+        //     .set({
+        //   'totalHoursTaken':
+        //       (int.parse(event.course.totalHoursTaken) + 1).toString(),
+        // });
         await _firebaseFirestore
             .collection('course')
             .doc(event.course.name)
-            .update({
-          'totalHoursTaken':
-              (int.parse(event.course.totalHoursTaken) + 1).toString(),
-        });
-        await _firebaseFirestore
-            .collection('course')
-            .doc(event.course.name)
-            .collection('courseTakenDates')
+            .collection(event.classroom.name)
             .add(CourseAttandance(dateTime: DateTime.now().toString()).toMap());
         emit(MarkAttandanceLoaded());
       }
@@ -66,6 +68,11 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
           .map((docSnap) => Attandance.fromMap(docSnap.data()))
           .toList();
       attandace = res;
+      final totalattandance = _firebaseFirestore
+          .collection('course')
+          .doc(event.courseName)
+          .collection(event.className)
+          .get();
       emit(AttandanceLoaded(attandance: attandace));
     } on FirebaseException catch (e) {
       emit(AttandanceError(error: e.message!));

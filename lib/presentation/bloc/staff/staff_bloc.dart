@@ -71,6 +71,7 @@ class StaffBloc extends Bloc<StaffEvent, StaffState> {
           .collection('staff')
           .doc(event.staff.name)
           .delete();
+      await _firebaseFirestore.collection('user').doc(event.staff.uid).delete();
       emit(DeleteStaffLoaded());
     } catch (e) {
       print(e.toString());

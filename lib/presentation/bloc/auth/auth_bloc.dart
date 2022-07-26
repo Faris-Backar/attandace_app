@@ -26,18 +26,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       log(res.user!.uid);
       final FirebaseFirestore db = FirebaseFirestore.instance;
       final response = await db.collection('user').doc(user.uid).get();
-      String username = response['name'];
-      if (res.user != null) {
+
+      if (response.exists) {
+        String username = response['name'];
         prefs.setString(PrefResources.USERNAME, username);
         String token = await res.user!.getIdToken();
         prefs.setString(PrefResources.TOKEN, token);
         prefs.setBool(PrefResources.IS_LOGGEDIN, true);
         prefs.setString(PrefResources.LOGGED_USER_ROLE, response['role']);
+        log(response.toString());
+        log('Role ${response['role']}');
+        emit(AuthLoaded(role: response['role']));
+      } else {
+        emit(const AuthError(error: 'user-not found'));
       }
-      log(response.toString());
-      log('Role ${response['role']}');
-
-      emit(AuthLoaded(role: response['role']));
     } on FirebaseAuthException catch (e) {
       emit(AuthError(error: e.code));
     }

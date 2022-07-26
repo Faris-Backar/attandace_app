@@ -36,8 +36,10 @@ class UpdateStudentEvent extends StudentEvent {
 
 class DeleteStudentEvent extends StudentEvent {
   final String username;
+  final String? uid;
   const DeleteStudentEvent({
     required this.username,
+    required this.uid,
   });
   @override
   List<Object> get props => [username];

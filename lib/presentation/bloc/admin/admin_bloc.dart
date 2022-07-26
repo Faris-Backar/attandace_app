@@ -9,6 +9,7 @@ part 'admin_state.dart';
 
 class AdminBloc extends Bloc<AdminEvent, AdminState> {
   List<Course> courseList = [];
+  List<CourseAttandance> courseAttadance = [];
   final FirebaseFirestore _firebaseFirestore = FirebaseFirestore.instance;
 
   AdminBloc() : super(AdminInitial()) {
@@ -37,15 +38,24 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(GetCourseLoading());
     try {
       final response = await _firebaseFirestore.collection('course').get();
+      final resp = await _firebaseFirestore
+          .collection('course')
+          .doc(event.courseName)
+          .collection(event.className!)
+          .get();
+      final respon =
+          resp.docs.map((e) => CourseAttandance.fromMap(e.data())).toList();
+      print(respon.toString());
       final res = response.docs
           .map((docSnap) => Course.fromMap(docSnap.data()))
           .toList();
       courseList = res;
-      emit(GetCourseLoaded(courseList: courseList));
+      courseAttadance = respon;
+      emit(GetCourseLoaded(
+          courseList: courseList, courseAttandace: courseAttadance));
     } on FirebaseException catch (e) {
       emit(AdminError(error: e.code));
     }
-    emit(GetCourseLoaded(courseList: courseList));
   }
 
   _getCourseAttandanceEvent(
@@ -61,7 +71,6 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
           .map((docSnap) => CourseAttandance.fromMap(docSnap.data()))
           .toList();
       List<CourseAttandance> courseAttandace = response;
-      print(courseAttandace);
       emit(GetCourseAttandanceLoaded(courseAttandace: courseAttandace));
     } catch (e) {
       rethrow;

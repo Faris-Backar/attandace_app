@@ -38,11 +38,16 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
         'name': event.student.name,
         'role': 'student',
       });
+      // print(res.user!.uid);
       try {
         final response = await _firebaseFirestore
             .collection('student')
             .doc(event.student.name)
-            .set(event.student.toMap());
+            .set(event.student.toMap())
+            .then((value) async => await _firebaseFirestore
+                .collection('student')
+                .doc(event.student.name)
+                .update({'uid': res.user!.uid}));
       } on FirebaseException catch (e) {
         StudentError(error: e.code);
       }
@@ -152,6 +157,7 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           .collection('attandance')
           .doc()
           .delete();
+      await _firebaseFirestore.collection('user').doc(event.uid).delete();
       emit(GetStudentLoaded(studentList: filteredStudentsList));
     } catch (e) {
       emit(StudentError(error: e.toString()));

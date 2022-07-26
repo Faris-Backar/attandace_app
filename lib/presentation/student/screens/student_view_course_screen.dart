@@ -1,6 +1,9 @@
+import 'dart:developer';
+
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/model/course_attandance.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/util/util.dart';
 import 'package:flutter/material.dart';
@@ -9,10 +12,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class StudentViewCourseScreen extends StatefulWidget {
   final Course course;
   final List<Attandance> attandance;
+  final String className;
   static const routeName = '/StudentViewCourseScreen';
-  const StudentViewCourseScreen(
-      {Key? key, required this.course, required this.attandance})
-      : super(key: key);
+  const StudentViewCourseScreen({
+    Key? key,
+    required this.course,
+    required this.attandance,
+    required this.className,
+  }) : super(key: key);
 
   @override
   State<StudentViewCourseScreen> createState() =>
@@ -30,7 +37,8 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
         .where((element) => element.courseName == widget.course.name)
         .toList();
     course = widget.course;
-    BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+    BlocProvider.of<AdminBloc>(context).add(
+        GetCourseEvent(className: widget.className, courseName: course!.name));
   }
 
   @override
@@ -51,6 +59,9 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 }
                 if (state is GetCourseLoaded) {
                   List<Course> courseList = state.courseList;
+                  log('response =>${state.courseAttandace}');
+                  List<CourseAttandance> courseAttandance =
+                      state.courseAttandace!;
 
                   selectedCourse = courseList.singleWhere(
                     (element) => element.name.contains(widget.course.name),
@@ -83,7 +94,7 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Total Hours Taken : '),
-                                  Text(selectedCourse!.totalHoursTaken),
+                                  Text(courseAttandance.length.toString()),
                                 ],
                               ),
                               const SizedBox(
@@ -94,7 +105,22 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Total Percentage : '),
-                                  Text(selectedCourse!.totalHoursTaken),
+                                  Text(
+                                    ((attandanceList.length /
+                                                courseAttandance.length) *
+                                            100)
+                                        .toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: ((attandanceList.length /
+                                                      double.parse(selectedCourse!
+                                                          .totalHoursTaken)) *
+                                                  100) <
+                                              75.00
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -139,16 +165,15 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 return Util.buildCircularProgressIndicator();
               }
               if (state is GetCourseLoaded) {
+                List<CourseAttandance> courseAttandance =
+                    state.courseAttandace!;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     const Text('Attandance Percentage'),
                     Text(
-                      ((attandanceList.length /
-                                  double.parse(
-                                      selectedCourse!.totalHoursTaken)) *
-                              100)
-                          .toString(),
+                      ((attandanceList.length / courseAttandance.length) * 100)
+                          .toStringAsFixed(2),
                       style: TextStyle(
                         color: ((attandanceList.length /
                                         double.parse(

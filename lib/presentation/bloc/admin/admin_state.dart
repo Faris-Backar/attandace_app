@@ -18,6 +18,7 @@ class GetCourseLoading extends AdminState {}
 class GetCourseLoaded extends AdminState {
   final List<Course> courseList;
   final List<CourseAttandance>? courseAttandace;
+
   const GetCourseLoaded({
     required this.courseList,
     this.courseAttandace,

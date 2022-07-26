@@ -45,8 +45,16 @@ class Routers {
       case CourseScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const CourseScreen());
       case CreateClassRoomScreen.routeName:
-        return CupertinoPageRoute(
-            builder: (_) => const CreateClassRoomScreen());
+        final args = settings.arguments;
+        if (args == null) {
+          return CupertinoPageRoute(
+              builder: (_) => const CreateClassRoomScreen());
+        } else {
+          return CupertinoPageRoute(
+              builder: (_) => CreateClassRoomScreen(
+                    classRoom: args as ClassRoom,
+                  ));
+        }
       case CreateStaffScreen.routeName:
         final arg = settings.arguments;
         if (arg == null) {
@@ -102,6 +110,7 @@ class Routers {
           builder: (_) => StudentViewCourseScreen(
             course: args[0] as Course,
             attandance: args[1] as List<Attandance>,
+            className: args[2] as String,
           ),
         );
       case LogInScreen.routeName:

@@ -81,7 +81,9 @@ class _StudentScreenState extends State<StudentScreen> {
                         ontap: () async {
                           BlocProvider.of<StudentBloc>(context).add(
                             DeleteStudentEvent(
-                                username: studentList[index].name),
+                              username: studentList[index].name,
+                              uid: studentList[index].uid,
+                            ),
                           );
                           Navigator.of(context).pop();
                           BlocProvider.of<StudentBloc>(context)
