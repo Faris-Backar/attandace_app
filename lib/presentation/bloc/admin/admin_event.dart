@@ -19,6 +19,7 @@ class CreateCourseEvent extends AdminEvent {
 class GetCourseEvent extends AdminEvent {
   final String? className;
   final String? courseName;
+
   const GetCourseEvent({
     this.className,
     this.courseName,
@@ -27,8 +28,10 @@ class GetCourseEvent extends AdminEvent {
 
 class GetCourseAttandaceEvent extends AdminEvent {
   final String courseName;
+  final String className;
   const GetCourseAttandaceEvent({
     required this.courseName,
+    required this.className,
   });
 }
 

@@ -65,7 +65,7 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
       final res = await _firebaseFirestore
           .collection('course')
           .doc(event.courseName)
-          .collection('attandance')
+          .collection(event.className)
           .get();
       final response = res.docs
           .map((docSnap) => CourseAttandance.fromMap(docSnap.data()))

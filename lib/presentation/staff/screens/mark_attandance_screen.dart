@@ -1,6 +1,7 @@
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/attandance_model.dart';
+import 'package:attandance_app/model/class_attandance_model.dart';
 import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/student.dart';
@@ -104,11 +105,33 @@ class _MarkAttandanceScreenState extends State<MarkAttandanceScreen> {
               padding: const EdgeInsets.all(8.0),
               child: DefaultButtonWidget(
                   onTap: () {
+                    List<Students> students = [];
+                    for (var element in studentList) {
+                      bool response = markedStudentsList.contains(element);
+                      if (response) {
+                        final res =
+                            Students(name: element.name, isPresent: true);
+                        students.add(res);
+                      } else {
+                        final res =
+                            Students(name: element.name, isPresent: false);
+                        students.add(res);
+                      }
+                    }
+
                     final attandance = Attandance(
                       date: DateTime.now().toString(),
                       isPresent: true,
                       courseName: widget.course.name,
                       courseCode: widget.course.courseCode,
+                    );
+                    final classAttandanceModel = ClassAttandanceModel(
+                      className: widget.classRoom.name,
+                      course: Courses(
+                        courseName: widget.course.name,
+                        courseCode: widget.course.courseCode,
+                        student: students,
+                      ),
                     );
                     BlocProvider.of<AttandanceBloc>(context).add(
                       MarkAttandanceEvent(
@@ -116,6 +139,8 @@ class _MarkAttandanceScreenState extends State<MarkAttandanceScreen> {
                         attandance: attandance,
                         classroom: widget.classRoom,
                         course: widget.course,
+                        studentsList: students,
+                        classAttandanceModel: classAttandanceModel,
                       ),
                     );
                   },

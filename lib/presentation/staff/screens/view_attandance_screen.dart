@@ -31,7 +31,7 @@ class _ViewAttandanceScreenState extends State<ViewAttandanceScreen> {
     BlocProvider.of<StudentBloc>(context).add(
       GetIndividualStudentEvent(userName: widget.student.name),
     );
-    BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+    BlocProvider.of<AdminBloc>(context).add(const GetCourseEvent());
   }
 
   @override
@@ -73,7 +73,9 @@ class _ViewAttandanceScreenState extends State<ViewAttandanceScreen> {
                               attandance: attandance);
                         });
                         BlocProvider.of<AdminBloc>(context).add(
-                          GetCourseAttandaceEvent(courseName: subjectValue),
+                          GetCourseAttandaceEvent(
+                              courseName: subjectValue,
+                              className: widget.student.assignedClass!),
                         );
                       }),
                   const SizedBox(

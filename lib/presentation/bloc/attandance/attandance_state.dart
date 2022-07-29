@@ -1,4 +1,3 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'attandance_bloc.dart';
 
 abstract class AttandanceState extends Equatable {
@@ -21,6 +20,13 @@ class AttandanceLoaded extends AttandanceState {
   });
   @override
   List<Object> get props => [attandance];
+}
+
+class IndividualCourseAttandanceLoaded extends AttandanceState {
+  final ClassAttandanceModel classAttandance;
+  const IndividualCourseAttandanceLoaded({
+    required this.classAttandance,
+  });
 }
 
 class AttandanceError extends AttandanceState {
