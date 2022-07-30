@@ -11,6 +11,7 @@ import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
+import 'package:attandance_app/presentation/staff/screens/view_course_attandance_screen.dart';
 import 'package:attandance_app/presentation/util/util.dart';
 import 'package:attandance_app/presentation/widgets/default_button_widget.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
@@ -544,7 +545,14 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                           child: Card(
                             elevation: 5.0,
                             child: ListTile(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                    ViewCourseAttandanceScreen.routeName,
+                                    arguments: [
+                                      widget.classRoom!.courses[index],
+                                      widget.classRoom!.name
+                                    ]);
+                              },
                               leading: Text(
                                   widget.classRoom!.courses[index].courseCode),
                               title:

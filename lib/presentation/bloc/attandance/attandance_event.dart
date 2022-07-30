@@ -1,3 +1,4 @@
+// ignore_for_file: public_member_api_docs, sort_constructors_first
 part of 'attandance_bloc.dart';
 
 abstract class AttandanceEvent extends Equatable {
@@ -37,4 +38,13 @@ class GetIndividualCourseAttandanceEvent extends AttandanceEvent {
   });
   @override
   List<Object> get props => [courseName, date, className];
+}
+
+class CheckStudentIsUnder extends AttandanceEvent {
+  final String date;
+  final String classAssigned;
+  const CheckStudentIsUnder({
+    required this.date,
+    required this.classAssigned,
+  });
 }

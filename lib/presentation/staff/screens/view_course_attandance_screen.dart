@@ -145,26 +145,63 @@ class _ViewCourseAttandanceScreenState
                         ),
                       ],
                     ),
-                    Divider(),
+                    const Divider(),
                     ListView.separated(
                         shrinkWrap: true,
-                        itemBuilder: (context, index) => Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(classAttandance[0]
-                                    .course
-                                    .student[index]
-                                    .name),
-                                Text(classAttandance[0]
-                                            .course
-                                            .student[index]
-                                            .isPresent ==
-                                        true
-                                    ? 'Present'
-                                    : 'Absent')
-                              ],
-                            ),
-                        separatorBuilder: (context, index) => Divider(),
+                        itemBuilder: (context, index) {
+                          var classroom = classAttandance[index];
+                          return Column(
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Period $index',
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 10,
+                                  ),
+                                  ListView.separated(
+                                    shrinkWrap: true,
+                                    itemBuilder: (context, i) => Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        Text(classroom.course.student[i].name),
+                                        Text(
+                                          classroom.course.student[index]
+                                                      .isPresent ==
+                                                  true
+                                              ? 'Present'
+                                              : 'Absent',
+                                          style: TextStyle(
+                                            color: classroom
+                                                        .course
+                                                        .student[index]
+                                                        .isPresent ==
+                                                    true
+                                                ? Colors.green
+                                                : Colors.red,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    separatorBuilder: (context, index) =>
+                                        const SizedBox(
+                                      height: 30,
+                                    ),
+                                    itemCount: classroom.course.student.length,
+                                  )
+                                ],
+                              ),
+                            ],
+                          );
+                        },
+                        separatorBuilder: (context, index) => const Divider(),
                         itemCount: classAttandance[0].course.student.length)
                   ],
                 );

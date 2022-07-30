@@ -1,8 +1,6 @@
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
-import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/presentation/bloc/auth/auth_bloc.dart';
-import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/screens/login_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/staff_course_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/view_assigned_classes_screen.dart';

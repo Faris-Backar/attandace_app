@@ -18,6 +18,7 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
   AttandanceBloc() : super(AttandanceInitial()) {
     on<MarkAttandanceEvent>(_markAttandance);
     on<GetIndividualCourseAttandanceEvent>(_getIndividualCourseAttandance);
+    on<CheckStudentIsUnder>(_checkStudentsWhereUnder);
   }
 
   _markAttandance(
@@ -83,5 +84,22 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
     } on FirebaseException catch (e) {
       emit(AttandanceError(error: e.message!));
     }
+  }
+
+  _checkStudentsWhereUnder(
+      CheckStudentIsUnder event, Emitter<AttandanceState> emit) async {
+    emit(AttandanceInitial());
+    emit(AttandanceLoading());
+    final response = await _firebaseFirestore
+        .collection('Attandance')
+        .doc(event.classAssigned)
+        .collection(event.date)
+        .get();
+    final res = response.docs
+        .map((docSnap) => ClassAttandanceModel.fromMap(docSnap.data()))
+        .toList();
+    print('response =>${response.docs}');
+    // final res = ClassAttandanceModel.fromMap(response.data()!);
+    emit(ClassAttandanceLoaded(classAttandance: res));
   }
 }
