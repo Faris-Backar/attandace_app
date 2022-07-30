@@ -23,6 +23,7 @@ import 'package:attandance_app/presentation/staff/screens/staff_profile_screen.d
 import 'package:attandance_app/presentation/staff/screens/view_assigned_classes_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/view_attandance_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/view_class_screen.dart';
+import 'package:attandance_app/presentation/staff/screens/view_course_attandance_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_course_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_home_screen.dart';
 import 'package:attandance_app/presentation/student/screens/student_profile_screen.dart';
@@ -101,7 +102,13 @@ class Routers {
         return CupertinoPageRoute(builder: (_) => const StudentHomeScreen());
       case StudentCourseScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentCourseScreen());
-
+      case ViewCourseAttandanceScreen.routeName:
+        final arg = settings.arguments as List;
+        return CupertinoPageRoute(
+            builder: (_) => ViewCourseAttandanceScreen(
+                  course: arg[0] as Course,
+                  className: arg[1] as String,
+                ));
       case StudentProfileScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentProfileScreen());
       case StudentViewCourseScreen.routeName:

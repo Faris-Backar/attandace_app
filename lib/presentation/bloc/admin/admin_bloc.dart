@@ -38,19 +38,23 @@ class AdminBloc extends Bloc<AdminEvent, AdminState> {
     emit(GetCourseLoading());
     try {
       final response = await _firebaseFirestore.collection('course').get();
-      final resp = await _firebaseFirestore
-          .collection('course')
-          .doc(event.courseName)
-          .collection(event.className!)
-          .get();
-      final respon =
-          resp.docs.map((e) => CourseAttandance.fromMap(e.data())).toList();
-      print(respon.toString());
+      if (event.className != null && event.className != null) {
+        final resp = await _firebaseFirestore
+            .collection('course')
+            .doc(event.courseName)
+            .collection(event.className!)
+            .get();
+        final respon =
+            resp.docs.map((e) => CourseAttandance.fromMap(e.data())).toList();
+
+        print(respon.toString());
+        courseAttadance = respon;
+      }
+
       final res = response.docs
           .map((docSnap) => Course.fromMap(docSnap.data()))
           .toList();
       courseList = res;
-      courseAttadance = respon;
       emit(GetCourseLoaded(
           courseList: courseList, courseAttandace: courseAttadance));
     } on FirebaseException catch (e) {

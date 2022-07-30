@@ -2,6 +2,7 @@ import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/presentation/staff/screens/view_attandance_screen.dart';
+import 'package:attandance_app/presentation/staff/screens/view_course_attandance_screen.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -81,6 +82,12 @@ class _ViewClassScreenState extends State<ViewClassScreen> {
                   ),
                   title: Text(widget.classRoom.courses[index].name),
                   subtitle: Text(widget.classRoom.courses[index].staff!.name),
+                  onTap: () => Navigator.of(context).pushNamed(
+                      ViewCourseAttandanceScreen.routeName,
+                      arguments: [
+                        widget.classRoom.courses[index],
+                        widget.classRoom.name
+                      ]),
                 ),
               ),
             ),

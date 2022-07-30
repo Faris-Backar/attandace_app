@@ -84,6 +84,7 @@ class _MarkAttandanceScreenState extends State<MarkAttandanceScreen> {
       ),
       bottomNavigationBar: BlocConsumer<AttandanceBloc, AttandanceState>(
         listener: (context, state) {
+          print(state);
           if (state is MarkAttandanceLoaded) {
             Util.buildSuccessSnackBar(context, content: 'Attandance Marked');
             Navigator.of(context).pop();

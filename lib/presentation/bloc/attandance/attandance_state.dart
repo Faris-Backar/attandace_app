@@ -23,7 +23,7 @@ class AttandanceLoaded extends AttandanceState {
 }
 
 class IndividualCourseAttandanceLoaded extends AttandanceState {
-  final ClassAttandanceModel classAttandance;
+  final List<ClassAttandanceModel> classAttandance;
   const IndividualCourseAttandanceLoaded({
     required this.classAttandance,
   });

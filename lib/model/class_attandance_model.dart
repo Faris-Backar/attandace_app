@@ -89,7 +89,7 @@ class Courses {
       courseName: map['courseName'] as String,
       courseCode: map['courseCode'] as String,
       student: List<Students>.from(
-        (map['student'] as List<int>).map<Students>(
+        (map['student'] as List<dynamic>).map<Students>(
           (x) => Students.fromMap(x as Map<String, dynamic>),
         ),
       ),

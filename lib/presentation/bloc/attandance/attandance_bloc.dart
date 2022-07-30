@@ -32,16 +32,6 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
             .collection('attandance')
             .doc(DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()))
             .set(event.attandance.toMap());
-
-        // await _firebaseFirestore
-        //     .collection('course')
-        //     .doc(event.course.name)
-        //     .collection(event.classroom.name)
-        //     .doc()
-        //     .set({
-        //   'totalHoursTaken':
-        //       (int.parse(event.course.totalHoursTaken) + 1).toString(),
-        // });
         await _firebaseFirestore
             .collection('course')
             .doc(event.course.name)
@@ -49,21 +39,21 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
           'totalHoursTaken':
               (int.parse(event.course.totalHoursTaken) + 1).toString(),
         });
-        for (var i = 0; i < event.studentsList.length; i++) {
-          await _firebaseFirestore
-              .collection('Attandance')
-              .doc(DateFormat('dd-MM-yyyy').format(DateTime.now()))
-              .set(
-                event.classAttandanceModel.toMap(),
-              );
-        }
+
         await _firebaseFirestore
             .collection('course')
             .doc(event.course.name)
             .collection('courseTakenDates')
             .add(CourseAttandance(dateTime: DateTime.now().toString()).toMap());
-        emit(MarkAttandanceLoaded());
       }
+      await _firebaseFirestore
+          .collection('Attandance')
+          .doc(event.classroom.name)
+          .collection(DateFormat('dd-MM-yyyy').format(DateTime.now()))
+          .add(
+            event.classAttandanceModel.toMap(),
+          );
+      emit(MarkAttandanceLoaded());
     } on FirebaseException catch (e) {
       emit(AttandanceError(error: e.message!));
     }
@@ -73,16 +63,21 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
       Emitter<AttandanceState> emit) async {
     emit(AttandanceInitial());
     emit(AttandanceLoading());
-    ClassAttandanceModel attandace;
+    List<ClassAttandanceModel> attandace;
     try {
       final response = await _firebaseFirestore
-          .collection('attandance')
-          .doc(event.date)
+          .collection('Attandance')
+          .doc(event.className)
+          .collection(event.date)
           .get();
-      // final res = response.docs
-      //     .map((docSnap) => Attandance.fromMap(docSnap.data()))
-      //     .toList();
-      final res = ClassAttandanceModel.fromMap(response.data()!);
+      print(event.className);
+      print(event.courseName);
+      print(event.date);
+      final res = response.docs
+          .map((docSnap) => ClassAttandanceModel.fromMap(docSnap.data()))
+          .toList();
+      print('response =>${response.docs}');
+      // final res = ClassAttandanceModel.fromMap(response.data()!);
       attandace = res;
       emit(IndividualCourseAttandanceLoaded(classAttandance: attandace));
     } on FirebaseException catch (e) {

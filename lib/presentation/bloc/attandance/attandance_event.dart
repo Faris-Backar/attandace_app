@@ -29,13 +29,12 @@ class MarkAttandanceEvent extends AttandanceEvent {
 class GetIndividualCourseAttandanceEvent extends AttandanceEvent {
   final String courseName;
   final String date;
+  final String className;
   const GetIndividualCourseAttandanceEvent({
     required this.courseName,
     required this.date,
+    required this.className,
   });
   @override
-  List<Object> get props => [
-        courseName,
-        date,
-      ];
+  List<Object> get props => [courseName, date, className];
 }

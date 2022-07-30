@@ -40,6 +40,8 @@ class ClassroomBloc extends Bloc<ClassroomEvent, ClassroomState> {
           'courses': event.classRoom.courses.map((x) => x.toMap()).toList(),
           'assignedClass': event.classRoom.name,
         });
+      }
+      for (int i = 0; i < courseList.length; i++) {
         await _firebaseFirestore
             .collection('course')
             .doc(courseList[i].name)
