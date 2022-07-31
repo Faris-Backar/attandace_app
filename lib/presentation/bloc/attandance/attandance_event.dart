@@ -13,23 +13,40 @@ class MarkAttandanceEvent extends AttandanceEvent {
   final Attandance attandance;
   final Course course;
   final ClassRoom classroom;
+  final List<Students> studentsList;
+  final ClassAttandanceModel classAttandanceModel;
   const MarkAttandanceEvent({
     required this.presentStudentsList,
     required this.attandance,
     required this.classroom,
     required this.course,
+    required this.studentsList,
+    required this.classAttandanceModel,
   });
   @override
   List<Object> get props => [presentStudentsList];
 }
 
 class GetIndividualCourseAttandanceEvent extends AttandanceEvent {
-  final String studentName;
   final String courseName;
+  final String date;
+  final String className;
   const GetIndividualCourseAttandanceEvent({
-    required this.studentName,
     required this.courseName,
+    required this.date,
+    required this.className,
   });
   @override
-  List<Object> get props => [studentName, courseName];
+  List<Object> get props => [courseName, date, className];
 }
+
+class CheckStudentIsUnder extends AttandanceEvent {
+  final String date;
+  final String classAssigned;
+  const CheckStudentIsUnder({
+    required this.date,
+    required this.classAssigned,
+  });
+}
+
+class StundetIsUnderEvent extends AttandanceEvent {}

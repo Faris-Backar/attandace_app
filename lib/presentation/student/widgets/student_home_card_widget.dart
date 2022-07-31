@@ -1,3 +1,4 @@
+import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:flutter/material.dart';
 
 class StudentHomeCardWidget extends StatelessWidget {
@@ -21,7 +22,7 @@ class StudentHomeCardWidget extends StatelessWidget {
         width: screenSize.width,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10.0),
-          color: Colors.black,
+          color: StyleResources.primaryColor,
         ),
         alignment: Alignment.center,
         child: Text(

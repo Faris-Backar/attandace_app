@@ -23,6 +23,13 @@ class AttandanceLoaded extends AttandanceState {
   List<Object> get props => [attandance];
 }
 
+class IndividualCourseAttandanceLoaded extends AttandanceState {
+  final List<ClassAttandanceModel> classAttandance;
+  const IndividualCourseAttandanceLoaded({
+    required this.classAttandance,
+  });
+}
+
 class AttandanceError extends AttandanceState {
   final String error;
   const AttandanceError({
@@ -32,3 +39,12 @@ class AttandanceError extends AttandanceState {
   @override
   List<Object> get props => [error];
 }
+
+class ClassAttandanceLoaded extends AttandanceState {
+  final List<ClassAttandanceModel> classAttandance;
+  const ClassAttandanceLoaded({
+    required this.classAttandance,
+  });
+}
+
+class StudentIsunderState extends AttandanceState {}

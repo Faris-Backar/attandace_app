@@ -1,5 +1,6 @@
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/model/attandance_model.dart';
+import 'package:attandance_app/model/class_attandance_model.dart';
 import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/course_attandance.dart';
@@ -17,6 +18,8 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
   AttandanceBloc() : super(AttandanceInitial()) {
     on<MarkAttandanceEvent>(_markAttandance);
     on<GetIndividualCourseAttandanceEvent>(_getIndividualCourseAttandance);
+    on<CheckStudentIsUnder>(_checkStudentsWhereUnder);
+    on<StundetIsUnderEvent>(_studetnIsUnder);
   }
 
   _markAttandance(
@@ -31,21 +34,35 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
             .collection('attandance')
             .doc(DateFormat('dd-MM-yyyy hh:mm a').format(DateTime.now()))
             .set(event.attandance.toMap());
-
-        await _firebaseFirestore
-            .collection('course')
-            .doc(event.course.name)
-            .update({
-          'totalHoursTaken':
-              (int.parse(event.course.totalHoursTaken) + 1).toString(),
-        });
-        await _firebaseFirestore
-            .collection('course')
-            .doc(event.course.name)
-            .collection('courseTakenDates')
-            .add(CourseAttandance(dateTime: DateTime.now().toString()).toMap());
-        emit(MarkAttandanceLoaded());
       }
+      var courseTotalHourseTaken = await _firebaseFirestore
+          .collection('course')
+          .doc(event.course.name)
+          .get();
+      String totalhourseTaken =
+          courseTotalHourseTaken.data()!['totalHoursTaken'];
+      print(totalhourseTaken);
+      await _firebaseFirestore
+          .collection('course')
+          .doc(event.course.name)
+          .update({
+        'totalHoursTaken': (int.parse(totalhourseTaken) + 1).toString(),
+      });
+
+      await _firebaseFirestore
+          .collection('course')
+          .doc(event.course.name)
+          .collection('courseTakenDates')
+          .add(CourseAttandance(dateTime: DateTime.now().toString()).toMap());
+
+      await _firebaseFirestore
+          .collection('Attandance')
+          .doc(event.classroom.name)
+          .collection(DateFormat('dd-MM-yyyy').format(DateTime.now()))
+          .add(
+            event.classAttandanceModel.toMap(),
+          );
+      emit(MarkAttandanceLoaded());
     } on FirebaseException catch (e) {
       emit(AttandanceError(error: e.message!));
     }
@@ -55,20 +72,47 @@ class AttandanceBloc extends Bloc<AttandanceEvent, AttandanceState> {
       Emitter<AttandanceState> emit) async {
     emit(AttandanceInitial());
     emit(AttandanceLoading());
-    List<Attandance> attandace = [];
+    List<ClassAttandanceModel> attandace;
     try {
+      print(event.className);
+      print(event.courseName);
+      print(event.date);
       final response = await _firebaseFirestore
-          .collection(PrefResources.STUDENT)
-          .doc(event.studentName)
-          .collection(PrefResources.ATTANDANCE)
+          .collection('Attandance')
+          .doc(event.className)
+          .collection(event.date)
           .get();
+
       final res = response.docs
-          .map((docSnap) => Attandance.fromMap(docSnap.data()))
+          .map((docSnap) => ClassAttandanceModel.fromMap(docSnap.data()))
           .toList();
+      print('response =>${response.docs}');
+      // final res = ClassAttandanceModel.fromMap(response.data()!);
       attandace = res;
-      emit(AttandanceLoaded(attandance: attandace));
+      emit(IndividualCourseAttandanceLoaded(classAttandance: attandace));
     } on FirebaseException catch (e) {
       emit(AttandanceError(error: e.message!));
     }
+  }
+
+  _checkStudentsWhereUnder(
+      CheckStudentIsUnder event, Emitter<AttandanceState> emit) async {
+    emit(AttandanceInitial());
+    emit(AttandanceLoading());
+    final response = await _firebaseFirestore
+        .collection('Attandance')
+        .doc(event.classAssigned)
+        .collection(event.date)
+        .get();
+    final res = response.docs
+        .map((docSnap) => ClassAttandanceModel.fromMap(docSnap.data()))
+        .toList();
+    print('response =>${response.docs}');
+    // final res = ClassAttandanceModel.fromMap(response.data()!);
+    emit(ClassAttandanceLoaded(classAttandance: res));
+  }
+
+  _studetnIsUnder(StundetIsUnderEvent event, Emitter<AttandanceState> emit) {
+    emit(StudentIsunderState());
   }
 }

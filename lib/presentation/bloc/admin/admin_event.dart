@@ -16,12 +16,22 @@ class CreateCourseEvent extends AdminEvent {
   List<Object> get props => [course];
 }
 
-class GetCourseEvent extends AdminEvent {}
+class GetCourseEvent extends AdminEvent {
+  final String? className;
+  final String? courseName;
+
+  const GetCourseEvent({
+    this.className,
+    this.courseName,
+  });
+}
 
 class GetCourseAttandaceEvent extends AdminEvent {
   final String courseName;
+  final String className;
   const GetCourseAttandaceEvent({
     required this.courseName,
+    required this.className,
   });
 }
 

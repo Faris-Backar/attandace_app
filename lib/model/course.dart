@@ -12,6 +12,7 @@ class Course {
   String totalHoursTaken;
   List<Student>? studnets;
   List<String>? classTakenDates;
+  String? assignedClass;
   Course({
     required this.name,
     required this.courseCode,
@@ -19,6 +20,7 @@ class Course {
     required this.totalHoursTaken,
     this.studnets,
     this.classTakenDates,
+    this.assignedClass,
   });
 
   Course copyWith({
@@ -28,6 +30,7 @@ class Course {
     String? totalHoursTaken,
     List<Student>? studnets,
     List<String>? classTakenDates,
+    String? assignedClass,
   }) {
     return Course(
       name: name ?? this.name,
@@ -36,6 +39,7 @@ class Course {
       totalHoursTaken: totalHoursTaken ?? this.totalHoursTaken,
       studnets: studnets ?? this.studnets,
       classTakenDates: classTakenDates ?? this.classTakenDates,
+      assignedClass: assignedClass ?? this.assignedClass,
     );
   }
 
@@ -47,6 +51,7 @@ class Course {
       'totalHoursTaken': totalHoursTaken,
       'studnets': studnets?.map((x) => x.toMap()).toList(),
       'classTakenDates': classTakenDates,
+      'assignedClass': assignedClass,
     };
   }
 
@@ -59,9 +64,10 @@ class Course {
       studnets: map['studnets'] != null
           ? List<Student>.from(map['studnets']?.map((x) => Student.fromMap(x)))
           : null,
-      classTakenDates: map['classTakenDates'] != null
+      classTakenDates: map['studnets'] != null
           ? List<String>.from(map['classTakenDates'])
           : null,
+      assignedClass: map['assignedClass'],
     );
   }
 
@@ -71,7 +77,7 @@ class Course {
 
   @override
   String toString() {
-    return 'Course(name: $name, courseCode: $courseCode, staff: $staff, totalHoursTaken: $totalHoursTaken, studnets: $studnets, classTakenDates: $classTakenDates)';
+    return 'Course(name: $name, courseCode: $courseCode, staff: $staff, totalHoursTaken: $totalHoursTaken, studnets: $studnets, classTakenDates: $classTakenDates, assignedClass: $assignedClass)';
   }
 
   @override
@@ -84,7 +90,8 @@ class Course {
         other.staff == staff &&
         other.totalHoursTaken == totalHoursTaken &&
         listEquals(other.studnets, studnets) &&
-        listEquals(other.classTakenDates, classTakenDates);
+        listEquals(other.classTakenDates, classTakenDates) &&
+        other.assignedClass == assignedClass;
   }
 
   @override
@@ -94,6 +101,7 @@ class Course {
         staff.hashCode ^
         totalHoursTaken.hashCode ^
         studnets.hashCode ^
-        classTakenDates.hashCode;
+        classTakenDates.hashCode ^
+        assignedClass.hashCode;
   }
 }

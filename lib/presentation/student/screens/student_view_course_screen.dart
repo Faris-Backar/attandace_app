@@ -1,7 +1,13 @@
+import 'dart:developer';
+
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/model/attandance_model.dart';
 import 'package:attandance_app/model/course.dart';
+import 'package:attandance_app/model/course_attandance.dart';
+import 'package:attandance_app/model/student.dart';
+import 'package:attandance_app/presentation/admin/widgets/drop_down_widget.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
+import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
 import 'package:attandance_app/presentation/util/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,10 +15,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class StudentViewCourseScreen extends StatefulWidget {
   final Course course;
   final List<Attandance> attandance;
+  final String? type;
+  final String className;
+  final Student? student;
   static const routeName = '/StudentViewCourseScreen';
-  const StudentViewCourseScreen(
-      {Key? key, required this.course, required this.attandance})
-      : super(key: key);
+  const StudentViewCourseScreen({
+    Key? key,
+    required this.course,
+    required this.attandance,
+    required this.className,
+    this.type,
+    this.student,
+  }) : super(key: key);
 
   @override
   State<StudentViewCourseScreen> createState() =>
@@ -20,9 +34,12 @@ class StudentViewCourseScreen extends StatefulWidget {
 }
 
 class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
+  late List<String> subjects;
   List<Attandance> attandanceList = [];
   Course? course;
   Course? selectedCourse;
+  bool refreshAll = true;
+  String subjectValue = '';
   @override
   void initState() {
     super.initState();
@@ -30,7 +47,8 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
         .where((element) => element.courseName == widget.course.name)
         .toList();
     course = widget.course;
-    BlocProvider.of<AdminBloc>(context).add(GetCourseEvent());
+    BlocProvider.of<AdminBloc>(context).add(
+        GetCourseEvent(className: widget.className, courseName: course!.name));
   }
 
   @override
@@ -44,6 +62,46 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
         padding: Config.defaultPadding(),
         child: Column(
           children: [
+            if (widget.type != null)
+              BlocBuilder<StudentBloc, StudentState>(builder: (context, state) {
+                if (state is GetIndividualStudentsLoaded) {
+                  List<Attandance> attandance = state.attandance;
+                  subjects = [];
+                  for (var i = 0; i < widget.student!.courses!.length; i++) {
+                    subjects.add(widget.student!.courses![i].name);
+                  }
+                  if (subjectValue == '') {
+                    subjectValue = subjects[0];
+                  }
+                  filterbySubject(
+                      subjectName: subjectValue, attandance: attandance);
+
+                  return Column(children: [
+                    DropDownFieldWidget(
+                        title: 'Subjects',
+                        value: subjectValue,
+                        item: subjects,
+                        onChanged: (value) {
+                          setState(() {
+                            subjectValue = value!;
+                            filterbySubject(
+                                subjectName: subjectValue,
+                                attandance: attandance);
+                          });
+                          BlocProvider.of<AdminBloc>(context).add(
+                            GetCourseAttandaceEvent(
+                                courseName: subjectValue,
+                                className: widget.student!.assignedClass!),
+                          );
+                        }),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                  ]);
+                }
+
+                return Container();
+              }),
             BlocBuilder<AdminBloc, AdminState>(
               builder: (context, state) {
                 if (state is GetCourseLoading) {
@@ -51,7 +109,9 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 }
                 if (state is GetCourseLoaded) {
                   List<Course> courseList = state.courseList;
-
+                  log('response =>${state.courseAttandace}');
+                  List<CourseAttandance> courseAttandance =
+                      state.courseAttandace!;
                   selectedCourse = courseList.singleWhere(
                     (element) => element.name.contains(widget.course.name),
                   );
@@ -94,7 +154,23 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Total Percentage : '),
-                                  Text(selectedCourse!.totalHoursTaken),
+                                  Text(
+                                    ((attandanceList.length /
+                                                double.parse(selectedCourse!
+                                                    .totalHoursTaken)) *
+                                            100)
+                                        .toStringAsFixed(2),
+                                    style: TextStyle(
+                                      color: ((attandanceList.length /
+                                                      double.parse(selectedCourse!
+                                                          .totalHoursTaken)) *
+                                                  100) <
+                                              75.00
+                                          ? Colors.red
+                                          : Colors.green,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                                 ],
                               ),
                             ],
@@ -139,6 +215,8 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                 return Util.buildCircularProgressIndicator();
               }
               if (state is GetCourseLoaded) {
+                List<CourseAttandance> courseAttandance =
+                    state.courseAttandace!;
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -148,7 +226,7 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                   double.parse(
                                       selectedCourse!.totalHoursTaken)) *
                               100)
-                          .toString(),
+                          .toStringAsFixed(2),
                       style: TextStyle(
                         color: ((attandanceList.length /
                                         double.parse(
@@ -169,5 +247,13 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
         ),
       ),
     );
+  }
+
+  filterbySubject(
+      {required String subjectName, required List<Attandance> attandance}) {
+    attandanceList = attandance
+        .where((element) => element.courseName.contains(subjectName))
+        .toList();
+    print(attandance);
   }
 }

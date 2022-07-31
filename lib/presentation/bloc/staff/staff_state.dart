@@ -13,6 +13,8 @@ class StaffLoading extends StaffState {}
 
 class CreateStaffLoaded extends StaffState {}
 
+class DeleteStaffLoaded extends StaffState {}
+
 class GetStaffLoaded extends StaffState {
   final List<Staff> staffList;
   const GetStaffLoaded({

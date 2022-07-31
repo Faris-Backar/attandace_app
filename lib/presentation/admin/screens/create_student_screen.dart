@@ -270,7 +270,9 @@ class _CreateStudentScreenState extends State<CreateStudentScreen> {
                                 if (widget.student != null) {
                                   BlocProvider.of<StudentBloc>(context).add(
                                     UpdateStudentEvent(
-                                        student: student, index: widget.index!),
+                                        student: student,
+                                        index: widget.index!,
+                                        name: widget.student!.name),
                                   );
                                 } else {
                                   BlocProvider.of<StudentBloc>(context).add(
