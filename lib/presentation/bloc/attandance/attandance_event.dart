@@ -48,3 +48,5 @@ class CheckStudentIsUnder extends AttandanceEvent {
     required this.classAssigned,
   });
 }
+
+class StundetIsUnderEvent extends AttandanceEvent {}

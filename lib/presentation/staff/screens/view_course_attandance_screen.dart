@@ -59,14 +59,20 @@ class _ViewCourseAttandanceScreenState
                       setState(() {
                         date = value;
                       });
-                      GetIndividualCourseAttandanceEvent(
-                          courseName: widget.course.name,
-                          date: DateFormat('dd-MM-yyyy').format(date!),
-                          className: widget.className);
+                      BlocProvider.of<AttandanceBloc>(context).add(
+                          GetIndividualCourseAttandanceEvent(
+                              courseName: widget.course.name,
+                              date: DateFormat('dd-MM-yyyy').format(date!),
+                              className: widget.className));
+                      print(DateFormat('dd-MM-yyyy').format(date!));
                     });
                   },
-                  child: Text(
-                      'Date : ${DateFormat('dd-MMM-yyyy').format(date!)}')),
+                  child: Row(
+                    children: [
+                      Text('Date : ${DateFormat('dd-MMM-yyyy').format(date!)}'),
+                      const Icon(Icons.arrow_drop_down)
+                    ],
+                  )),
               const SizedBox(
                 height: 10,
               ),
@@ -83,47 +89,13 @@ class _ViewCourseAttandanceScreenState
               if (state is IndividualCourseAttandanceLoaded) {
                 var classAttandance = state.classAttandance;
                 List<ClassAttandanceModel> attandanceList = classAttandance;
+                if (classAttandance.isEmpty) {
+                  return Center(
+                    child: Text(
+                        'No Data is found for date ${DateFormat('dd-MMM-yyyy').format(date!)}'),
+                  );
+                }
 
-                // return DataTable(
-                //   columns: const [
-                //     DataColumn(
-                //       label: Text('Name'),
-                //     ),
-                //     DataColumn(
-                //       label: Text('Present'),
-                //     ),
-                //   ],
-                //   // rows: attandanceList.map((e) {
-                //   //   int i = 0;
-
-                //   //   return DataRow(cells: [
-                //   //     DataCell(
-                //   //       Text(e.course.student[i++].name),
-                //   //     ),
-                //   //     DataCell(Text(e.course.student[i++].isPresent == true
-                //   //         ? 'Present'
-                //   //         : 'Absent')),
-                //   //   ]);
-                //   // }).toList(),
-                //   rows: [
-                //     // for (var index = 0;
-                //     //     index <= classAttandance.length;
-                //     //     index++)
-                //     for (int i = 0;
-                //         i <= classAttandance[0].course.student.length;
-                //         i++)
-                //       DataRow(cells: [
-                //         DataCell(
-                //           Text(classAttandance[0].course.student[i].name),
-                //         ),
-                //         DataCell(Text(
-                //             classAttandance[0].course.student[i].isPresent ==
-                //                     true
-                //                 ? 'Present'
-                //                 : 'Absent')),
-                //       ]),
-                //   ],
-                // );
                 return Column(
                   children: [
                     Row(
@@ -150,59 +122,53 @@ class _ViewCourseAttandanceScreenState
                         shrinkWrap: true,
                         itemBuilder: (context, index) {
                           var classroom = classAttandance[index];
+                          print(classroom.course);
                           return Column(
                             children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Period $index',
-                                    style: const TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 16,
+                              Text(
+                                'Period ${index + 1}',
+                                style: const TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              ListView.separated(
+                                shrinkWrap: true,
+                                itemBuilder: (context, i) => Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(classroom.course.student[i].name),
+                                    Text(
+                                      classroom.course.student[i].isPresent ==
+                                              true
+                                          ? 'Present'
+                                          : 'Absent',
+                                      style: TextStyle(
+                                        color: classroom.course.student[i]
+                                                    .isPresent ==
+                                                true
+                                            ? Colors.green
+                                            : Colors.red,
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  ListView.separated(
-                                    shrinkWrap: true,
-                                    itemBuilder: (context, i) => Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        Text(classroom.course.student[i].name),
-                                        Text(
-                                          classroom.course.student[index]
-                                                      .isPresent ==
-                                                  true
-                                              ? 'Present'
-                                              : 'Absent',
-                                          style: TextStyle(
-                                            color: classroom
-                                                        .course
-                                                        .student[index]
-                                                        .isPresent ==
-                                                    true
-                                                ? Colors.green
-                                                : Colors.red,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    separatorBuilder: (context, index) =>
-                                        const SizedBox(
-                                      height: 30,
-                                    ),
-                                    itemCount: classroom.course.student.length,
-                                  )
-                                ],
+                                  ],
+                                ),
+                                separatorBuilder: (context, index) =>
+                                    const SizedBox(
+                                  height: 30,
+                                ),
+                                itemCount: classroom.course.student.length,
                               ),
                             ],
                           );
                         },
                         separatorBuilder: (context, index) => const Divider(),
-                        itemCount: classAttandance[0].course.student.length)
+                        itemCount: classAttandance.length)
                   ],
                 );
               }

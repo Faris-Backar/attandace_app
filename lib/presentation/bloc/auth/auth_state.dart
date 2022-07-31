@@ -13,8 +13,10 @@ class AuthLoading extends AuthState {}
 
 class AuthLoaded extends AuthState {
   final String role;
+  final Student? student;
   const AuthLoaded({
     required this.role,
+    this.student,
   });
   @override
   List<Object> get props => [role];

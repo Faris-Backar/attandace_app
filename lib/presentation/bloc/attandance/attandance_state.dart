@@ -46,3 +46,5 @@ class ClassAttandanceLoaded extends AttandanceState {
     required this.classAttandance,
   });
 }
+
+class StudentIsunderState extends AttandanceState {}

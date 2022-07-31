@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/main.dart';
+import 'package:attandance_app/model/student.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
@@ -12,6 +13,7 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final _firebase = FirebaseFirestore.instance;
   AuthBloc() : super(AuthInitial()) {
     on<SignInEvent>(_signInWithEmail);
     on<SignOutEvent>(_signout);
@@ -29,13 +31,25 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       if (response.exists) {
         String username = response['name'];
+        String role = response['role'];
         prefs.setString(PrefResources.USERNAME, username);
         String token = await res.user!.getIdToken();
         prefs.setString(PrefResources.TOKEN, token);
         prefs.setBool(PrefResources.IS_LOGGEDIN, true);
         prefs.setString(PrefResources.LOGGED_USER_ROLE, response['role']);
+
+        if (role == 'student') {
+          final studentResponse =
+              await _firebase.collection('student').doc(username).get();
+          Student student = Student.fromMap(studentResponse.data()!);
+          if (student.assignedClass != null) {
+            prefs.setString(
+                PrefResources.CLASSROOM_NAME, student.assignedClass!);
+          }
+        }
         log(response.toString());
         log('Role ${response['role']}');
+
         emit(AuthLoaded(role: response['role']));
       } else {
         emit(const AuthError(error: 'user-not found'));

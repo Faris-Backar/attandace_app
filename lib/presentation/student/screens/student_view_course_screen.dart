@@ -94,7 +94,7 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   const Text('Total Hours Taken : '),
-                                  Text(courseAttandance.length.toString()),
+                                  Text(selectedCourse!.totalHoursTaken),
                                 ],
                               ),
                               const SizedBox(
@@ -107,7 +107,8 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                                   const Text('Total Percentage : '),
                                   Text(
                                     ((attandanceList.length /
-                                                courseAttandance.length) *
+                                                double.parse(selectedCourse!
+                                                    .totalHoursTaken)) *
                                             100)
                                         .toStringAsFixed(2),
                                     style: TextStyle(
@@ -172,7 +173,10 @@ class _StudentViewCourseScreenState extends State<StudentViewCourseScreen> {
                   children: [
                     const Text('Attandance Percentage'),
                     Text(
-                      ((attandanceList.length / courseAttandance.length) * 100)
+                      ((attandanceList.length /
+                                  double.parse(
+                                      selectedCourse!.totalHoursTaken)) *
+                              100)
                           .toStringAsFixed(2),
                       style: TextStyle(
                         color: ((attandanceList.length /
