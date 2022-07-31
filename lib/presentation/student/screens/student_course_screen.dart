@@ -3,6 +3,7 @@ import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/pref_resources.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/main.dart';
+import 'package:attandance_app/model/class_attandance_model.dart';
 import 'package:attandance_app/model/student.dart';
 import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
 import 'package:attandance_app/presentation/student/screens/student_view_course_screen.dart';
@@ -11,15 +12,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class StudentCourseScreen extends StatelessWidget {
+  final String? studentName;
   static const routeName = '/StudentCourseScreen';
-  const StudentCourseScreen({Key? key}) : super(key: key);
+  const StudentCourseScreen({Key? key, this.studentName}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<StudentBloc>(context).add(
-      GetIndividualStudentEvent(
-          userName: prefs.getString(PrefResources.USERNAME)!),
-    );
+    if (studentName == null) {
+      BlocProvider.of<StudentBloc>(context).add(
+        GetIndividualStudentEvent(
+            userName: prefs.getString(PrefResources.USERNAME)!),
+      );
+    } else {
+      BlocProvider.of<StudentBloc>(context).add(
+        GetIndividualStudentEvent(userName: studentName!),
+      );
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text("Courses"),

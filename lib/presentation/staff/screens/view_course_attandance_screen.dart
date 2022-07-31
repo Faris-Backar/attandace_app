@@ -95,7 +95,6 @@ class _ViewCourseAttandanceScreenState
                         'No Data is found for date ${DateFormat('dd-MMM-yyyy').format(date!)}'),
                   );
                 }
-
                 return Column(
                   children: [
                     Row(

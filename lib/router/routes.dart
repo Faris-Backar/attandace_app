@@ -14,6 +14,7 @@ import 'package:attandance_app/presentation/admin/screens/create_staff_screen.da
 import 'package:attandance_app/presentation/admin/screens/create_student_screen.dart';
 import 'package:attandance_app/presentation/admin/screens/staff_screen.dart';
 import 'package:attandance_app/presentation/admin/screens/student_screen.dart';
+import 'package:attandance_app/presentation/admin/screens/students_assigned_course_screen.dart';
 import 'package:attandance_app/presentation/screens/login_screen.dart';
 import 'package:attandance_app/presentation/screens/splash_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/Staff_course_screen.dart';
@@ -101,7 +102,16 @@ class Routers {
       case StudentHomeScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentHomeScreen());
       case StudentCourseScreen.routeName:
-        return CupertinoPageRoute(builder: (_) => const StudentCourseScreen());
+        final args = settings.arguments;
+        if (args == null) {
+          return CupertinoPageRoute(
+              builder: (_) => const StudentCourseScreen());
+        } else {
+          return CupertinoPageRoute(
+              builder: (_) => StudentCourseScreen(
+                    studentName: args as String,
+                  ));
+        }
       case ViewCourseAttandanceScreen.routeName:
         final arg = settings.arguments as List;
         return CupertinoPageRoute(
@@ -111,8 +121,15 @@ class Routers {
                 ));
       case StudentProfileScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const StudentProfileScreen());
+      case StudentsAssignedCourseScreen.routeName:
+        final args = settings.arguments as String;
+        return CupertinoPageRoute(
+            builder: (_) => StudentsAssignedCourseScreen(
+                  studnetName: args,
+                ));
       case StudentViewCourseScreen.routeName:
         final args = settings.arguments as List;
+
         return CupertinoPageRoute(
           builder: (_) => StudentViewCourseScreen(
             course: args[0] as Course,
@@ -120,6 +137,7 @@ class Routers {
             className: args[2] as String,
           ),
         );
+
       case LogInScreen.routeName:
         return CupertinoPageRoute(builder: (_) => const LogInScreen());
       case StaffScreen.routeName:

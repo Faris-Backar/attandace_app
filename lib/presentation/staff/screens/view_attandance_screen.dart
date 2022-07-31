@@ -55,6 +55,7 @@ class _ViewAttandanceScreenState extends State<ViewAttandanceScreen> {
             if (state is GetIndividualStudentsLoaded) {
               List<Attandance> attandance = state.attandance;
               subjects = [];
+              log('res=>' + widget.student.courses.toString());
               for (var i = 0; i < widget.student.courses!.length; i++) {
                 subjects.add(widget.student.courses![i].name);
               }
@@ -77,11 +78,11 @@ class _ViewAttandanceScreenState extends State<ViewAttandanceScreen> {
                               subjectName: subjectValue,
                               attandance: attandance);
                         });
-                        BlocProvider.of<AdminBloc>(context).add(
-                          GetCourseAttandaceEvent(
-                              courseName: subjectValue,
-                              className: widget.student.assignedClass!),
-                        );
+                        // BlocProvider.of<AdminBloc>(context).add(
+                        //   GetCourseAttandaceEvent(
+                        //       courseName: subjectValue,
+                        //       className: widget.student.assignedClass!),
+                        // );
                       }),
                   const SizedBox(
                     height: 20,
@@ -103,7 +104,6 @@ class _ViewAttandanceScreenState extends State<ViewAttandanceScreen> {
                         log('response =>${state.courseAttandace}');
                         List<CourseAttandance> courseAttandance =
                             state.courseAttandace!;
-
                         selectedCourse = courseList.singleWhere(
                           (element) => element.name.contains(subjectValue),
                         );
@@ -148,6 +148,7 @@ class _ViewAttandanceScreenState extends State<ViewAttandanceScreen> {
               if (state is GetCourseLoaded) {
                 List<CourseAttandance> courseAttandance =
                     state.courseAttandace!;
+
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [

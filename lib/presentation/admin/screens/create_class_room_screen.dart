@@ -6,12 +6,15 @@ import 'package:attandance_app/model/classroom.dart';
 import 'package:attandance_app/model/course.dart';
 import 'package:attandance_app/model/staff.dart';
 import 'package:attandance_app/model/student.dart';
+import 'package:attandance_app/presentation/admin/screens/students_assigned_course_screen.dart';
 import 'package:attandance_app/presentation/admin/widgets/drop_down_widget.dart';
 import 'package:attandance_app/presentation/bloc/admin/admin_bloc.dart';
 import 'package:attandance_app/presentation/bloc/classroom/classroom_bloc.dart';
 import 'package:attandance_app/presentation/bloc/staff/staff_bloc.dart';
 import 'package:attandance_app/presentation/bloc/student/student_bloc.dart';
+import 'package:attandance_app/presentation/staff/screens/view_attandance_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/view_course_attandance_screen.dart';
+import 'package:attandance_app/presentation/student/screens/student_course_screen.dart';
 import 'package:attandance_app/presentation/util/util.dart';
 import 'package:attandance_app/presentation/widgets/default_button_widget.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
@@ -97,8 +100,7 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
         ),
         leading: IconButton(
           onPressed: () {
-            BlocProvider.of<ClassroomBloc>(context)
-                .add(GetClassRoomStudentsEvent());
+            BlocProvider.of<ClassroomBloc>(context).add(GetClassRoomEvent());
             Navigator.of(context).pop();
           },
           icon: const Icon(Icons.arrow_back_ios_new_rounded),
@@ -592,7 +594,12 @@ class _CreateClassRoomState extends State<CreateClassRoomScreen> {
                         child: _buildSlidableAction(
                           index: index,
                           child: ListTile(
-                            onTap: () {},
+                            onTap: () {
+                              Navigator.of(context).pushNamed(
+                                  StudentCourseScreen.routeName,
+                                  arguments:
+                                      widget.classRoom!.students[index].name);
+                            },
                             leading: Container(
                               height: 40,
                               width: 40,

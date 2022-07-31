@@ -1,8 +1,9 @@
 import 'package:attandance_app/core/config/config.dart';
 import 'package:attandance_app/core/resources/style_resources.dart';
 import 'package:attandance_app/model/classroom.dart';
-import 'package:attandance_app/presentation/staff/screens/view_attandance_screen.dart';
+import 'package:attandance_app/presentation/admin/screens/students_assigned_course_screen.dart';
 import 'package:attandance_app/presentation/staff/screens/view_course_attandance_screen.dart';
+import 'package:attandance_app/presentation/student/screens/student_course_screen.dart';
 import 'package:attandance_app/presentation/widgets/text_input_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -125,9 +126,8 @@ class _ViewClassScreenState extends State<ViewClassScreen> {
                   trailing: Text(widget.classRoom.students[index].department),
                   onTap: () {
                     Navigator.of(context).pushNamed(
-                      ViewAttandanceScreen.routeName,
-                      arguments: widget.classRoom.students[index],
-                    );
+                        StudentCourseScreen.routeName,
+                        arguments: widget.classRoom.students[index].name);
                   },
                 ),
               ),
