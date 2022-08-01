@@ -83,7 +83,6 @@ class StudentBloc extends Bloc<StudentEvent, StudentState> {
           .collection('student')
           .doc(event.student.name)
           .set(event.student.toMap());
-      await _firebaseFirestore.collection('student').doc(event.name).delete();
       emit(CreateStudentLoaded());
     } catch (e) {
       log(e.toString());
